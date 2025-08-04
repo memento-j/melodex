@@ -98,6 +98,7 @@ router.get("/playlist", async (req,res) => {
         playlistID = matchedPlaylist.id;
       }
 
+      //get each invididual song info
       service.playlistItems.list({
         auth: oauth2Client,
         part: 'snippet',
@@ -110,6 +111,7 @@ router.get("/playlist", async (req,res) => {
         }
         //get playlist information and return it
         const songs = response.data.items; 
+        
         res.json(songs);
       });
     });
@@ -118,7 +120,7 @@ router.get("/playlist", async (req,res) => {
 
 //search for each song and store the video id
 //get playlist name and eacch song's video id and create api body to create the playlist
-router.post("/create-playlist", async (req, res) => {
+router.post("/playlist", async (req, res) => {
   //check if authorization token is available
 
   if (!req.session) {

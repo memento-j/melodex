@@ -27,7 +27,8 @@ function App() {
       fetchedSongs.forEach((song: any) => {
         formatedSongs.push({
           "title": song.snippet.title,
-          "artist": song.snippet.videoOwnerChannelTitle
+          "artist": song.snippet.videoOwnerChannelTitle,
+          "image": song.snippet.thumbnails.default.url
         })
       });
 
@@ -58,13 +59,30 @@ function App() {
       fetchedSongs.forEach((song: any) => {
         formatedSongs.push({
           "title": song.track.name,
-          "artist": song.track.artists[0].name
+          "artist": song.track.artists[0].name,
+          "image" : song.track.album.images[0].url
         })
       });
       setPlaylist(formatedSongs);
       } catch (err) {
         console.log(`error getting ${playlistName} from Spotify API`, err);
       }
+  }
+
+  async function createSpotifyPlaylist() {
+    try {
+      const response = await fetch(`http://127.0.0.1:8080/spotify/playlist`, {
+        method: "POST",
+        credentials: "include",
+      });
+      if (!response.ok) {
+        console.log(`error creating ${playlistName} from Spotify API`);
+        return;
+      }
+      //const fetchedSongs = await response.json();
+    } catch(err) {
+      console.log(err);
+    }
   }
 
   //user selects their desired music provideer
@@ -85,6 +103,7 @@ function App() {
       {playlist.map((song:any,index: number) => {
         return(
           <div key={index}>
+            <img src={song.image}/>
             {song.title}
             {" by: " + song.artist}
           </div>
@@ -93,6 +112,7 @@ function App() {
       <br />
       <p>Songs look good? Select which provider to transfer {playlistName} to:</p>
       <button>Transfer to Youtube</button>
+      <button onClick={() => createSpotifyPlaylist()}>Transfer to Spotify</button>
     </div>
   )
 }

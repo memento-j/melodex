@@ -3,6 +3,7 @@ const express = require('express');
 const crypto = require('crypto');
 const querystring = require("querystring");
 const axios = require("axios");
+const { log } = require("console");
 const router = express.Router();
 
 
@@ -30,6 +31,7 @@ router.get('/callback', async (req, res) => {
   //get authorization code and state values from query paarameters
   const code = req.query.code || null;
   const state = req.query.state || null;
+  
 
   //if there is a state mismatch redirect to error
   if (!state) {
@@ -57,7 +59,7 @@ router.get('/callback', async (req, res) => {
     );
     //get generated access token and refresh token from response (thanks axios for automatic json parsing yay :D)
     req.session.SpotifyAuthTokens = response.data;
-      
+    
     //redirect to frontend
     res.redirect('http://127.0.0.1:5173');
 
@@ -103,6 +105,44 @@ router.get("/playlist", async (req, res) => {
   } catch(err) {
     res.status(400)
   }
+});
+
+//create playlist
+router.post("/playlist", async (req, res) => {
+  //check if there is a spotify auth token
+  //check to ensure req.body song title and artist are not blank
+
+  //get playlistname and songs info from request body
+  //const { playlistName } = req.body;
+  const playlistName = "rope";
+  try {
+    //get user's id to create playlist with it
+    const response = await axios.get("https://api.spotify.com/v1/me", {
+      headers: {
+        Authorization: "Bearer " + req.session.SpotifyAuthTokens.access_token
+      }
+    });
+    const userID = response.data.id;
+    
+    //create empty playlist of name gotten from request body
+    const createPlaylistRes = await axios.post(`https://api.spotify.com/v1/users/${userID}/playlists`, 
+      {
+        name: playlistName 
+      },
+      {
+      headers: {
+        Authorization: "Bearer " + req.session.SpotifyAuthTokens.access_token
+      }
+    });
+    console.log(createPlaylistRes.data);
+    
+  } catch(err) {
+    res.status(400).json({message: `error creating ${playlistName}`})
+  }
+
+  //create playlist
+  //search for each song's uri
+  //using the songs` uri, add the songs to the playlist
 });
 
 module.exports = router;
