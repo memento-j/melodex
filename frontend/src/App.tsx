@@ -1,74 +1,122 @@
-import { useEffect, useState } from 'react'
+import { useState, type ChangeEvent } from 'react'
 
 function App() {
-  const [playlistName, setPlaylistName] = useState<string>("");
-  const [playlist, setPlaylist] = useState<object[]>([]);
-  //const [hasAuthenticated, setHasAuthenticated] = useState<boolean>(false)
+  const [allPlaylists, setAllPlaylists] = useState<object[]>([]);
+  const [playlistsToAddIds, setPlaylistsToAddIds] = useState<string[]>([]);
+  const [playlistsToAdd, setPlaylistsToAdd] = useState<object[]>([]);
+  const [currentService, setCurrentService] = useState<string>("none");
 
-  //add loading indicator to this when fetching playlist
-  async function getYoutubePlaylist() {
-    //if nothing entered to input, return
-    if (playlistName.trim() == "") {
-      console.log("nothing entered to search buddy");
-      
-      return;
-    }
+  //get current user's youtube playlists
+  async function getYoutubePlaylists() {
     try {
-      const response = await fetch(`http://localhost:8080/youtube/playlist?pname=${playlistName}`, {
+      const response = await fetch(`http://localhost:8080/youtube/playlists`, {
         credentials: 'include'
       });
       if (!response.ok) {
-        console.log(`error getting ${playlistName} from Youtube API`)
+        console.log(`error getting playlists from Youtube API`)
         return;
       }
-      const fetchedSongs = await response.json();
-
-      let formatedSongs: any[] = [];
-      fetchedSongs.forEach((song: any) => {
-        formatedSongs.push({
-          "title": song.snippet.title,
-          "artist": song.snippet.videoOwnerChannelTitle,
-          "image": song.snippet.thumbnails.default.url
+      const fetchedPlaylists = await response.json();
+      let formatedPlaylist: any[] = [];
+      fetchedPlaylists.forEach((playlist: any) => {
+        formatedPlaylist.push({
+          "title": playlist.snippet.title,
+          "image": playlist.snippet.thumbnails.default.url,
+          "id": playlist.id
         })
       });
-
-      setPlaylist(formatedSongs);
-      } catch (err) {
-        console.log(`error getting ${playlistName} from Youtube API`, err);
-      }
+      //set to stateful var to be displayed
+      //along with the name of the service this was retrieved from
+      setAllPlaylists(formatedPlaylist);
+      setCurrentService("youtube");
+    } catch (err) {
+      console.log(`error getting playlists from Youtube API`, err);
+    }
   }
 
-  async function getSpotifyPlaylist() {
-    //if nothing entered to input, return
-    if (playlistName.trim() == "") {
-      console.log("nothing entered lil bro");
-      
-      return;
-    }
+  //get current user's spotify playlists
+  async function getSpotifyPlaylists() {
     try {
-      const response = await fetch(`http://127.0.0.1:8080/spotify/playlist?pname=${playlistName}`, {
+      const response = await fetch(`http://127.0.0.1:8080/spotify/playlists`, {
         credentials: "include"
       });
       if (!response.ok) {
-        console.log(`error getting ${playlistName} from Spotify API`);
+        console.log(`error getting playlists from Spotify API`);
         return;
       }
-      const fetchedSongs = await response.json();
+      const fetchedPlaylists = await response.json();
 
-      let formatedSongs: any[] = [];
-      fetchedSongs.forEach((song: any) => {
-        formatedSongs.push({
-          "title": song.track.name,
-          "artist": song.track.artists[0].name,
-          "image" : song.track.album.images[0].url
-        })
+      //create new obj to store necessary playlist info
+      let formatedPlaylists: any[] = [];
+      fetchedPlaylists.forEach((playlist: any) => {
+        //if playlist is empty dont add image (since it is null)
+        if (playlist.tracks.total === 0) { 
+          formatedPlaylists.push({
+            "title": playlist.name,
+            "image" : null,
+            "id": playlist.id
+          });
+        }
+        else {
+          formatedPlaylists.push({
+            "title": playlist.name,
+            "image" : playlist.images[0].url,
+            "id": playlist.id
+          });
+        }
       });
-      setPlaylist(formatedSongs);
+      //set to stateful var to be displayed
+      setAllPlaylists(formatedPlaylists);
+      setCurrentService("spotify");
       } catch (err) {
-        console.log(`error getting ${playlistName} from Spotify API`, err);
+        console.log(`error getting playlists from Spotify API`, err);
       }
   }
 
+  //display playlist(s) song info
+  //used so the user can see whether the playlist they selected was correct
+  async function displayPlaylistsToAdd() {
+    //loop through playlist ids 
+    playlistsToAddIds.forEach(async (playlistId) => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8080/${currentService}/playlist?pID=${playlistId}`, {
+          method: "GET",
+          credentials: "include",
+        });     
+        const fetchedSongs = await response.json(); 
+        //used to store information about every song in the current playlist
+        let songInfo: any[] = [];
+        ///
+        ///
+        ///
+        ///switch statement here maybe based on which service
+        ///
+        ///
+        ///
+        fetchedSongs.forEach((song: any) => {
+          songInfo.push({
+            "title": song.track.name,
+            "artist": song.track.artists[0].name,
+            "image": song.track.album.images[0].url,
+          });
+        });
+        //searches for current playlist being seaarched from all playlists to store the name
+        const currentPlaylist: any = allPlaylists.find((playlist: any) => playlist.id == playlistId);
+        if (currentPlaylist) {
+          //add song info along with playlist name to playlistsToAdd array
+          setPlaylistsToAdd([...playlistsToAdd, { 
+            name: currentPlaylist.title,
+            image: currentPlaylist.image,
+            songs: songInfo
+          }]);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  }
+
+  //post post post post post post post post post
   async function createSpotifyPlaylist() {
     try {
       const response = await fetch(`http://127.0.0.1:8080/spotify/playlist`, {
@@ -76,7 +124,7 @@ function App() {
         credentials: "include",
       });
       if (!response.ok) {
-        console.log(`error creating ${playlistName} from Spotify API`);
+        console.log(`error creating playlist from Spotify API`);
         return;
       }
       //const fetchedSongs = await response.json();
@@ -85,9 +133,16 @@ function App() {
     }
   }
 
-  //user selects their desired music provideer
-  //user enters name of playlist
-  //console.log(typeof JSON.parse(localStorage.getItem("songsToAdd") || "[]"));
+  //store ids of playlists to be transfered
+  function handlePlaylistCheck(playlistID: string, event: ChangeEvent<HTMLInputElement>) {
+    if (event.target.checked) {
+      setPlaylistsToAddIds([...playlistsToAddIds, playlistID]);
+    }
+    else  {
+      const newIds = playlistsToAddIds.filter(currID => currID !== playlistID)
+      setPlaylistsToAddIds(newIds);
+    }    
+  }
   
   return (
     <div>
@@ -96,23 +151,38 @@ function App() {
       <br/>
       <a href={`http://localhost:8080/spotify/login`}> Login to Spotify </a>
       <br />
-      <input onChange={(event) => setPlaylistName(event.target.value)} placeholder='Enter playlist name'></input>
-      <button onClick={() => getYoutubePlaylist()}>Get {playlistName} from Youtube</button>
-      <button onClick={() => getSpotifyPlaylist()}>Get {playlistName} from Spotify</button>
-      {/* get the array of objects for the songs, set to an empty array if null*/}
-      {playlist.map((song:any,index: number) => {
+      <button onClick={() => getYoutubePlaylists()}>Get playlists from Youtube</button>
+      <button onClick={() => getSpotifyPlaylists()}>Get playlists from Spotify</button>
+      {/* Display all playlists */}
+      {allPlaylists.map((playlist:any) => {
         return(
-          <div key={index}>
-            <img src={song.image}/>
-            {song.title}
-            {" by: " + song.artist}
+          <div key={playlist.id}>
+            <img src={playlist.image}/>
+            <input type="checkbox" id={playlist.title} name={playlist.title} onChange={(event) => handlePlaylistCheck(playlist.id, event)}/>
+            <label htmlFor={playlist.title}>{playlist.title}</label>
           </div>
         );
-      })}
+      })}     
       <br />
-      <p>Songs look good? Select which provider to transfer {playlistName} to:</p>
+      <p>Playlist Selected from {currentService}? Select which provider to transfer to:</p>
+      <button onClick={() => displayPlaylistsToAdd()}> Click to display playlist(s) to add</button>
       <button>Transfer to Youtube</button>
       <button onClick={() => createSpotifyPlaylist()}>Transfer to Spotify</button>
+      {/*playlistsToAddIds.map((id: string, index: number) => {
+        return (
+          <div key={index}>
+            {id}
+          </div>
+        );
+      })*/}
+      {playlistsToAdd.map((playlist:any, index: number) => {
+        return (
+          <div key={index}>
+            {playlist.name}
+            <img src={playlist.image}/>
+          </div>  
+        );
+      })}
     </div>
   )
 }

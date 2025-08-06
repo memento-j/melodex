@@ -3,7 +3,6 @@ const express = require('express');
 const crypto = require('crypto');
 const querystring = require("querystring");
 const axios = require("axios");
-const { log } = require("console");
 const router = express.Router();
 
 
@@ -60,23 +59,17 @@ router.get('/callback', async (req, res) => {
     //get generated access token and refresh token from response (thanks axios for automatic json parsing yay :D)
     req.session.SpotifyAuthTokens = response.data;
     
-    //redirect to frontend
+    //redirect to frontend with 200 response code
     res.redirect('http://127.0.0.1:5173');
 
   } catch (error) {
     console.error('Token exchange failed:', error.response?.data || error.message);
-    res.redirect('/?' + querystring.stringify({ error: 'invalid_token' }));
+    res.redirect(401, '/?' + querystring.stringify({ error: 'invalid_token' }));
   }
 });
 
-//get playlist
-router.get("/playlist", async (req, res) => {
-  //check if there is an access token available ?
-  
-  //get playlist name from query params
-  const playlistName = req.query.pname;
-  //go through each playlist on the logged in account and match a playlist's name 
-  // with the search query(does not include song info)
+//get playlists
+router.get("/playlists", async (req,res) => {
   try {
     const response = await axios.get("https://api.spotify.com/v1/me/playlists", {
       headers: {
@@ -84,22 +77,31 @@ router.get("/playlist", async (req, res) => {
       }
     });
     const playlists = response.data.items;
-    //search through each plaaylist looking for the playlist name
-    const searchedPlaylist = playlists.find((playlist) => playlist.name == playlistName);
-    //ensure playlist was found
-    if (searchedPlaylist === undefined) {
-      return res.status(400).json({message: `Unable to find ${playlistName}`})
-    }
     
-    // using the playlist's tracks route retrieved from the previous
-    // request, get the track info
-    const tracksResponse = await axios.get(searchedPlaylist.tracks.href, {
+    return res.json(playlists);
+
+  } catch(err) {
+    res.status(400)
+  }
+});
+
+//get playlist
+router.get("/playlist", async (req, res) => {
+  //check if there is an access token available ?
+  
+  //get playlist id from query param
+  const playtlistId = req.query.pID;
+  
+  //get playlist's song info
+  try {
+    const response = await axios.get(`https://api.spotify.com/v1/playlists/${playtlistId}/tracks`, 
+
+      {
       headers: {
         Authorization: "Bearer " + req.session.SpotifyAuthTokens.access_token
       }
     });
-    //return tracks
-    const tracks = tracksResponse.data.items;
+    const tracks = response.data.items;
     return res.json(tracks);
 
   } catch(err) {

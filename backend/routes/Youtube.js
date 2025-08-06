@@ -32,7 +32,7 @@ router.get("/gen-auth", (req,res) => {
   // Generate a url that asks permissions for the Drive activity and Google Calendar scope
   const authorizationUrl = oauth2Client.generateAuthUrl({
     // 'online' (default) or 'offline' (gets refresh_token)
-    access_type: 'online',
+    access_type: 'offline',
     /** Pass in the scopes array defined above.
       * Alternatively, if only one scope is needed, you can pass a scope URL as a string */
     scope: scopes,
@@ -62,6 +62,40 @@ router.get('/oauth2callback', async (req, res) => {
     res.redirect('http://localhost:5173');
   }
 });
+
+
+//get all user playlists
+router.get("/playlists", async (req, res) => {
+  oauth2Client.setCredentials(req.session.YTAuthTokens);
+  // Use youtube API to fetch the different playlists on the account
+  
+  const service = google.youtube('v3');
+  service.playlists.list({
+    auth: oauth2Client,
+    part: 'snippet',
+    mine: true,
+    maxResults: 50
+  }, (err, response)  => {
+    if (err) {
+      console.log('The API returned an error: ' + err);
+      return;
+    }
+    //get playlist information
+    const playlists = response.data.items;
+    
+    //no playlists found
+    if (playlists.length == 0) {
+      //return here with error
+      console.log('No playlists found.');
+    }
+    //search through each playlist until the playlist name matches and get the playlist id
+    else {
+      return res.json(playlists);
+    }
+  });
+
+});
+
     /** Save credential to the global variable in case access token was refreshed.
       * ACTION ITEM: In a production app, you likely want to save the refresh token
       *              in a secure persistent database instead. */
