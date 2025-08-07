@@ -6,7 +6,7 @@ const axios = require("axios");
 const router = express.Router();
 
 
-//stuff to store in another file xd
+//enviornmetn variables
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const redirect_uri = process.env.SPOTIFY_REDIRECT_URI;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
@@ -68,7 +68,7 @@ router.get('/callback', async (req, res) => {
   }
 });
 
-//get playlists
+//get all user playlists
 router.get("/playlists", async (req,res) => {
   try {
     const response = await axios.get("https://api.spotify.com/v1/me/playlists", {
@@ -85,7 +85,7 @@ router.get("/playlists", async (req,res) => {
   }
 });
 
-//get playlist
+//get singular user playlist based on playlistID passed throuhg query params
 router.get("/playlist", async (req, res) => {
   //check if there is an access token available ?
   

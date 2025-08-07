@@ -73,11 +73,11 @@ function App() {
       }
   }
 
-  //display playlist(s) song info
+  //get all playlist song info only for the playlists the user wants to add
   //used so the user can see whether the playlist they selected was correct
-  async function displayPlaylistsToAdd() {
-    //loop through playlist ids 
-    playlistsToAddIds.forEach(async (playlistId) => {
+  async function getPlaylistsToAdd() {
+    
+    for (const playlistId of playlistsToAddIds) {
       try {
         const response = await fetch(`http://127.0.0.1:8080/${currentService}/playlist?pID=${playlistId}`, {
           method: "GET",
@@ -89,22 +89,50 @@ function App() {
         ///
         ///
         ///
-        ///switch statement here maybe based on which service
-        ///
-        ///
-        ///
-        fetchedSongs.forEach((song: any) => {
-          songInfo.push({
-            "title": song.track.name,
-            "artist": song.track.artists[0].name,
-            "image": song.track.album.images[0].url,
-          });
-        });
-        //searches for current playlist being seaarched from all playlists to store the name
-        const currentPlaylist: any = allPlaylists.find((playlist: any) => playlist.id == playlistId);
+        ///switch statement here maybe based on which service is used ?
+        /// do the same thing done below for youtube and parse the song title and artist name from the video title and channel name
+        /// and put thaat information into song info along with the yt video thumbnail for "image"
+        /// also remember to updatee the youtube get playlist router as well
+
+
+        //based on the service being used, the api data is parsed differently
+        //differenciate this using a switch statement
+        switch (currentService) {
+          case "spotify":
+            console.log("spty");
+            
+            fetchedSongs.forEach((song: any) => {
+              songInfo.push({
+                "title": song.track.name,
+                "artist": song.track.artists[0].name,
+                "image": song.track.album.images[0].url,
+              });
+            });
+            break;
+            // do this do  this do this do this do this aaadd songs and work on displaying the songs as well
+            //then aafter this can work on post
+          case "youtube":
+            console.log("add yt songs");
+            
+            //
+            fetchedSongs.forEach((song: any) => {
+              /*songInfo.push({
+                "title": song.track.name,
+                "artist": song.track.artists[0].name,
+                "image": song.track.album.images[0].url,
+              });*/
+            });
+            break;
+          default:
+            console.log("no valid service");
+            break;
+        }
+        
+        //searches for current playlist from all playlists to store the name and image of it
+        const currentPlaylist: any = allPlaylists.find((playlist: any) => playlist.id == playlistId);        
         if (currentPlaylist) {
           //add song info along with playlist name to playlistsToAdd array
-          setPlaylistsToAdd([...playlistsToAdd, { 
+          setPlaylistsToAdd(prevPlaylistsToAdd => [...prevPlaylistsToAdd, { 
             name: currentPlaylist.title,
             image: currentPlaylist.image,
             songs: songInfo
@@ -113,7 +141,7 @@ function App() {
       } catch (err) {
         console.log(err);
       }
-    });
+    }
   }
 
   //post post post post post post post post post
@@ -135,6 +163,8 @@ function App() {
 
   //store ids of playlists to be transfered
   function handlePlaylistCheck(playlistID: string, event: ChangeEvent<HTMLInputElement>) {
+    //set current playlist empty
+    setPlaylistsToAdd([]);
     if (event.target.checked) {
       setPlaylistsToAddIds([...playlistsToAddIds, playlistID]);
     }
@@ -165,21 +195,32 @@ function App() {
       })}     
       <br />
       <p>Playlist Selected from {currentService}? Select which provider to transfer to:</p>
-      <button onClick={() => displayPlaylistsToAdd()}> Click to display playlist(s) to add</button>
+      <button onClick={() => getPlaylistsToAdd()}> Click to display playlist(s) to add</button>
       <button>Transfer to Youtube</button>
       <button onClick={() => createSpotifyPlaylist()}>Transfer to Spotify</button>
-      {/*playlistsToAddIds.map((id: string, index: number) => {
+      {playlistsToAddIds.map((id: string, index: number) => {
         return (
           <div key={index}>
             {id}
           </div>
         );
-      })*/}
+      })}
+      {playlistsToAdd.length}
       {playlistsToAdd.map((playlist:any, index: number) => {
         return (
           <div key={index}>
             {playlist.name}
             <img src={playlist.image}/>
+            {playlist.songs.map((song: any, index: number) => {
+              return(
+                <div key={index}>
+                {song.title}
+                {song.artist}
+                <img src={song.image}></img>
+              </div>
+              );
+            })}
+            <br/>
           </div>  
         );
       })}

@@ -100,54 +100,30 @@ router.get("/playlists", async (req, res) => {
       * ACTION ITEM: In a production app, you likely want to save the refresh token
       *              in a secure persistent database instead. */
     //userCredential = tokens;
+
+//get individual user playlist
 router.get("/playlist", async (req,res) => {
-    oauth2Client.setCredentials(req.session.YTAuthTokens);
-    //change to query param
-    const playlistName = req.query.pname;
+    //oauth2Client.setCredentials(req.session.YTAuthTokens);
+    //get playlist ID from query parameters
+    const playlistId = req.query.pID;
     
     // Use youtube API to fetch the different playlists on the account
     const service = google.youtube('v3');
-    let playlistID = "";
-    service.playlists.list({
+    //get each invididual song info
+    service.playlistItems.list({
       auth: oauth2Client,
       part: 'snippet',
-      mine: true
-    }, (err, response)  => {
+      playlistId: playlistId,
+      maxResults: 50
+    }, (err, response) => {
       if (err) {
-        console.log('The API returned an error: ' + err);
+        console.log('Error fetching youtube playlist songs: ' + err);
         return;
       }
-      //get playlist information
-      const playlists = response.data.items;
-      //no playlists found
-      if (playlists.length == 0) {
-        //return here with error
-        console.log('No playlists found.');
-      }
-      //search through each playlist until the playlist name matches and get the playlist id
-      else {
-        const matchedPlaylist = playlists.find(playlist => playlist.snippet.title === playlistName);
-        //no playlist matched queried playlist name, so return
-        if (matchedPlaylist == undefined) { return res.status(404).json({message: "playlist not found"}) }
-        playlistID = matchedPlaylist.id;
-      }
-
-      //get each invididual song info
-      service.playlistItems.list({
-        auth: oauth2Client,
-        part: 'snippet',
-        playlistId: playlistID,
-        maxResults: 50
-      }, (err, response) => {
-        if (err) {
-          console.log('Error fetching youtube playlist songs: ' + err);
-          return;
-        }
-        //get playlist information and return it
-        const songs = response.data.items; 
-        
-        res.json(songs);
-      });
+      //get playlist information and return it
+      const songs = response.data.items; 
+      console.log(songs);
+      return res.status(200).json(songs);
     });
 });    
 
