@@ -1,4 +1,5 @@
-import { useState, type ChangeEvent } from 'react'
+import { useState, type ChangeEvent } from 'react';
+import { parseYTSongInfo } from './youtubeParse';
 
 function App() {
   const [allPlaylists, setAllPlaylists] = useState<object[]>([]);
@@ -21,7 +22,7 @@ function App() {
       fetchedPlaylists.forEach((playlist: any) => {
         formatedPlaylist.push({
           "title": playlist.snippet.title,
-          "image": playlist.snippet.thumbnails.default.url,
+          "image": playlist.snippet.thumbnails.medium.url,
           "id": playlist.id
         })
       });
@@ -86,41 +87,28 @@ function App() {
         const fetchedSongs = await response.json(); 
         //used to store information about every song in the current playlist
         let songInfo: any[] = [];
-        ///
-        ///
-        ///
-        ///switch statement here maybe based on which service is used ?
-        /// do the same thing done below for youtube and parse the song title and artist name from the video title and channel name
-        /// and put thaat information into song info along with the yt video thumbnail for "image"
-        /// also remember to updatee the youtube get playlist router as well
-
 
         //based on the service being used, the api data is parsed differently
         //differenciate this using a switch statement
         switch (currentService) {
-          case "spotify":
-            console.log("spty");
-            
+          case "spotify":         
             fetchedSongs.forEach((song: any) => {
               songInfo.push({
-                "title": song.track.name,
                 "artist": song.track.artists[0].name,
+                "title": song.track.name,
                 "image": song.track.album.images[0].url,
               });
             });
             break;
-            // do this do  this do this do this do this aaadd songs and work on displaying the songs as well
-            //then aafter this can work on post
           case "youtube":
-            console.log("add yt songs");
-            
-            //
             fetchedSongs.forEach((song: any) => {
-              /*songInfo.push({
-                "title": song.track.name,
-                "artist": song.track.artists[0].name,
-                "image": song.track.album.images[0].url,
-              });*/
+              //returns array of [artistName, songTitle]
+              const parsedSongInfo = parseYTSongInfo(song.snippet.title, song.snippet.videoOwnerChannelTitle);
+              songInfo.push({
+                "artist": parsedSongInfo[0],
+                "title": parsedSongInfo[1],
+                "image": song.snippet.thumbnails.medium.url,
+              });
             });
             break;
           default:
@@ -209,13 +197,13 @@ function App() {
       {playlistsToAdd.map((playlist:any, index: number) => {
         return (
           <div key={index}>
-            {playlist.name}
+            {playlist.name + " Playlist"}
             <img src={playlist.image}/>
             {playlist.songs.map((song: any, index: number) => {
               return(
                 <div key={index}>
+                {song.artist + " - "}
                 {song.title}
-                {song.artist}
                 <img src={song.image}></img>
               </div>
               );

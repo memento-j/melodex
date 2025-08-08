@@ -21,7 +21,7 @@ const scopes = [
   "https://www.googleapis.com/auth/youtube"
 ];
 
-//genrates authorizationURL for getting an access token
+//genrates authorizationURL for getting an access token to use youtube api
 router.get("/gen-auth", (req,res) => {
   // Generate a secure random state value.
   const state = crypto.randomBytes(32).toString('hex');
@@ -44,8 +44,9 @@ router.get("/gen-auth", (req,res) => {
   res.redirect(authorizationUrl);
 });
 
-// Receive the callback from Google's OAuth 2.0 server.
-// Then save the access token to the session to use in api calls
+// Receive the callback from Google's OAuth 2.0 server and
+// use the code generated to generate auth tokens.
+// Then save the tokens generated to the current session to use in api calls
 router.get('/oauth2callback', async (req, res) => {
   // Handle the OAuth 2.0 server response
   let q = url.parse(req.url, true).query;
@@ -58,7 +59,6 @@ router.get('/oauth2callback', async (req, res) => {
   } else { // Get access and refresh tokens (if access_type is offline)
     let { tokens } = await oauth2Client.getToken(q.code);
     req.session.YTAuthTokens = tokens;
-    
     res.redirect('http://localhost:5173');
   }
 });
@@ -67,8 +67,7 @@ router.get('/oauth2callback', async (req, res) => {
 //get all user playlists
 router.get("/playlists", async (req, res) => {
   oauth2Client.setCredentials(req.session.YTAuthTokens);
-  // Use youtube API to fetch the different playlists on the account
-  
+  // Use youtube API to fetch the different playlists on the account created by the user
   const service = google.youtube('v3');
   service.playlists.list({
     auth: oauth2Client,
@@ -80,15 +79,13 @@ router.get("/playlists", async (req, res) => {
       console.log('The API returned an error: ' + err);
       return;
     }
-    //get playlist information
+    //get all of the user's playlist information
     const playlists = response.data.items;
-    
-    //no playlists found
+    //if no playlists found
     if (playlists.length == 0) {
-      //return here with error
+      //change to proper reesponse with status  code and err message
       console.log('No playlists found.');
     }
-    //search through each playlist until the playlist name matches and get the playlist id
     else {
       return res.json(playlists);
     }
@@ -96,20 +93,18 @@ router.get("/playlists", async (req, res) => {
 
 });
 
-    /** Save credential to the global variable in case access token was refreshed.
-      * ACTION ITEM: In a production app, you likely want to save the refresh token
-      *              in a secure persistent database instead. */
-    //userCredential = tokens;
+/** Save credential to the global variable in case access token was refreshed.
+  * ACTION ITEM: In a production app, you likely want to save the refresh token
+  *              in a secure persistent database instead. */
+//userCredential = tokens;
 
 //get individual user playlist
 router.get("/playlist", async (req,res) => {
-    //oauth2Client.setCredentials(req.session.YTAuthTokens);
     //get playlist ID from query parameters
     const playlistId = req.query.pID;
-    
-    // Use youtube API to fetch the different playlists on the account
+    // Use youtube API to fetch the playlist that matches the playlistId
     const service = google.youtube('v3');
-    //get each invididual song info
+    //get playlist's song/video info
     service.playlistItems.list({
       auth: oauth2Client,
       part: 'snippet',
@@ -122,7 +117,6 @@ router.get("/playlist", async (req,res) => {
       }
       //get playlist information and return it
       const songs = response.data.items; 
-      console.log(songs);
       return res.status(200).json(songs);
     });
 });    
