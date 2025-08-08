@@ -7,9 +7,24 @@ function App() {
   const [playlistsToAdd, setPlaylistsToAdd] = useState<object[]>([]);
   const [currentService, setCurrentService] = useState<string>("none");
 
+  //gets current service being used on mount
   useEffect(() => {
     getCurrentService();
   }, [])
+
+  //when current  services changes, get current playlists
+  useEffect(() => {
+    switch (currentService) {
+      case "youtube":
+        getYoutubePlaylists()
+        break;
+      case "spotify":
+        getSpotifyPlaylists();
+        break;
+      default:
+        break;
+    }
+  }, [currentService])
 
   async function getCurrentService() {
     try {
@@ -186,15 +201,12 @@ function App() {
   
   return (
     <div>
-      {currentService}
       <p>Select which provider to get playlists from:</p>
       <button onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/gen-auth'}> Login to Youtube</button>
       <br/>
       <button onClick={() => window.location.href = 'http://127.0.0.1:8080/spotify/login'}> Login to Spotify </button>
       <br />
-      <button onClick={() => getYoutubePlaylists()}>Get playlists from Youtube</button>
-      <button onClick={() => getSpotifyPlaylists()}>Get playlists from Spotify</button>
-      <p>Select which playlist(s) to transfer: </p>
+      <p>Currently signed into {currentService}. Select which playlist(s) to transfer: </p>
       {/* Display all playlists */}
       {allPlaylists.map((playlist:any) => {
         return(
@@ -216,9 +228,9 @@ function App() {
           </div>
         );
       })}
-      {playlistsToAdd.map((playlist:any, index: number) => {
+      {playlistsToAdd.map((playlist:any) => {
         return (
-          <div key={index}>
+          <div key={playlist.id}>
             {playlist.name + " Playlist"}
             <img src={playlist.image}/>
             {playlist.songs.map((song: any, index: number) => {

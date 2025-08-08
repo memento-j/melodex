@@ -17,9 +17,6 @@ const oauth2Client = new google.auth.OAuth2(
   process.env.YOUTUBE_REDIRECT_URI
 );
 
-console.log(process.env.YOUTUBE_REDIRECT_URI);
-
-
 // Access scopes for YouTube API
 const scopes = [
   "https://www.googleapis.com/auth/youtube"

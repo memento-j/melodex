@@ -78,7 +78,6 @@ router.get("/playlists", async (req,res) => {
       }
     });
     const playlists = response.data.items;
-    console.log(req.session.id, " in playlists route");
     return res.json(playlists);
 
   } catch(err) {
