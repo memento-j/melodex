@@ -1,3 +1,3 @@
 # Melodex
 
-## Playlist Transferer
+## Playlist Transferer (Youtube/Spotify for now)
