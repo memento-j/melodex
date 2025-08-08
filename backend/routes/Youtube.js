@@ -3,7 +3,6 @@ const {google} = require('googleapis');
 const crypto = require('crypto');
 const express = require('express');
 const url = require('url');
-const { log } = require("console");
 const router = express.Router();
 
 /**
@@ -23,10 +22,9 @@ const scopes = [
 ];
 
 //genrates authorizationURL for getting an access token to use youtube api
-router.get("/gen-auth", (req,res) => {
+router.get("/login", (req,res) => {
   // Generate a secure random state value.
   const state = crypto.randomBytes(32).toString('hex');
-
   // Store state in the session
   req.session.state = state;
   // Generate a url that asks permissions for the Drive activity and Google Calendar scope
@@ -61,7 +59,7 @@ router.get('/oauth2callback', async (req, res) => {
     req.session.YTAuthTokens = tokens;
     //set current service signed into to the session
     req.session.currentService = "youtube";
-    res.redirect('http://127.0.0.1:5173');
+    res.redirect('http://127.0.0.1:5173/get-playlists');
   }
 });
 
@@ -128,7 +126,6 @@ router.get("/playlist", async (req,res) => {
 //get playlist name and eacch song's video id and create api body to create the playlist
 router.post("/playlist", async (req, res) => {
   //check if authorization token is available
-
   if (!req.session) {
     res.status(401).json({ error: 'User not authenticated (create  playlist)' });
   }

@@ -60,8 +60,8 @@ router.get('/callback', async (req, res) => {
     req.session.SpotifyAuthTokens = response.data;
     //set current service signed into to the session
     req.session.currentService = "spotify";
-    //redirect to frontend with 200 response code
-    res.redirect('http://127.0.0.1:5173');
+    //redirect to frontend
+    res.redirect('http://127.0.0.1:5173/get-playlists');
 
   } catch (error) {
     console.error('Token exchange failed:', error.response?.data || error.message);

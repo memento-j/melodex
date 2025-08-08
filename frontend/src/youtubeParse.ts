@@ -1,13 +1,13 @@
 //helper function to parse song name and artist name from a youtube video
  export function parseYTSongInfo(videoTitle: string, channelTitle: string) {
-    let artist = "";
-    let title = "";
+    let artist = '';
+    let title = '';
 
     //take a lot of fluff out of the title. 
     const cleanedTitle = videoTitle
       //remove things in () or []
       .replace(/\(.*?\)|\[.*?\]/g, '')
-      //remove worlds generally found in youtube video titles for music videos
+      //remove words generally found in youtube video titles for music videos
       //this will GENERALLY keep only the name of the song and the name of the artist if it is available
       .replace(/official|video|lyrics|HD|feat\.?|ft\.?|audio/gi, '')
       //remove extra white space if there is any

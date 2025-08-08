@@ -1,18 +1,22 @@
 import { useEffect, useState, type ChangeEvent } from 'react';
-import { parseYTSongInfo } from './youtubeParse';
+import { parseYTSongInfo } from '../youtubeParse';
+import { Link } from 'react-router-dom';
 
-function App() {
+function GetPlaylists() {
   const [allPlaylists, setAllPlaylists] = useState<object[]>([]);
   const [playlistsToAddIds, setPlaylistsToAddIds] = useState<string[]>([]);
   const [playlistsToAdd, setPlaylistsToAdd] = useState<object[]>([]);
   const [currentService, setCurrentService] = useState<string>("none");
+  const [readyToTransfer, setReadyToTransfer] = useState<boolean>(false);
 
   //gets current service being used on mount
   useEffect(() => {
+    console.log(readyToTransfer);
+
     getCurrentService();
   }, [])
 
-  //when current  services changes, get current playlists
+  //when current services changes, get user's playlist from that service
   useEffect(() => {
     switch (currentService) {
       case "youtube":
@@ -26,6 +30,13 @@ function App() {
     }
   }, [currentService])
 
+  //gets info for the playlists to be transfered everytime one 
+  // is added or removed from the playlist ids array
+  useEffect(() => {
+    getPlaylistsToAdd();
+  }, [playlistsToAddIds])
+
+  //gets the name of the current music service being used
   async function getCurrentService() {
     try {
       const response = await fetch("http://127.0.0.1:8080/current-service", {
@@ -36,9 +47,9 @@ function App() {
       }
       const currentService = await response.json();
       setCurrentService(currentService.service);
-    } catch(err) {
+    } catch (err) {
       console.log(err);
-      
+
     }
   }
 
@@ -86,17 +97,17 @@ function App() {
       let formatedPlaylists: any[] = [];
       fetchedPlaylists.forEach((playlist: any) => {
         //if playlist is empty dont add image (since it is null)
-        if (playlist.tracks.total === 0) { 
+        if (playlist.tracks.total === 0) {
           formatedPlaylists.push({
             "title": playlist.name,
-            "image" : null,
+            "image": null,
             "id": playlist.id
           });
         }
         else {
           formatedPlaylists.push({
             "title": playlist.name,
-            "image" : playlist.images[0].url,
+            "image": playlist.images[0].url,
             "id": playlist.id
           });
         }
@@ -104,34 +115,32 @@ function App() {
       //set to stateful var to be displayed
       setAllPlaylists(formatedPlaylists);
       setCurrentService("spotify");
-      } catch (err) {
-        console.log(`error getting playlists from Spotify API`, err);
-      }
+    } catch (err) {
+      console.log(`error getting playlists from Spotify API`, err);
+    }
   }
 
   //get all playlist song info only for the playlists the user wants to add
-  //used so the user can see whether the playlist they selected was correct
   async function getPlaylistsToAdd() {
-    
     for (const playlistId of playlistsToAddIds) {
       try {
         const response = await fetch(`http://127.0.0.1:8080/${currentService}/playlist?pID=${playlistId}`, {
           method: "GET",
           credentials: "include",
-        });     
-        const fetchedSongs = await response.json(); 
+        });
+        const fetchedSongs = await response.json();
         //used to store information about every song in the current playlist
         let songInfo: any[] = [];
 
         //based on the service being used, the api data is parsed differently
         //differenciate this using a switch statement
         switch (currentService) {
-          case "spotify":         
+          case "spotify":
             fetchedSongs.forEach((song: any) => {
               songInfo.push({
                 "artist": song.track.artists[0].name,
                 "title": song.track.name,
-                "image": song.track.album.images[0].url,
+                "image": song.track.album.images[1].url,
               });
             });
             break;
@@ -142,7 +151,7 @@ function App() {
               songInfo.push({
                 "artist": parsedSongInfo[0],
                 "title": parsedSongInfo[1],
-                "image": song.snippet.thumbnails.medium.url,
+                "image": song.snippet.thumbnails.default.url,
               });
             });
             break;
@@ -150,12 +159,12 @@ function App() {
             console.log("no valid service");
             break;
         }
-        
+
         //searches for current playlist from all playlists to store the name and image of it
-        const currentPlaylist: any = allPlaylists.find((playlist: any) => playlist.id == playlistId);        
+        const currentPlaylist: any = allPlaylists.find((playlist: any) => playlist.id == playlistId);
         if (currentPlaylist) {
           //add song info along with playlist name to playlistsToAdd array
-          setPlaylistsToAdd(prevPlaylistsToAdd => [...prevPlaylistsToAdd, { 
+          setPlaylistsToAdd(prevPlaylistsToAdd => [...prevPlaylistsToAdd, {
             name: currentPlaylist.title,
             image: currentPlaylist.image,
             songs: songInfo
@@ -174,87 +183,37 @@ function App() {
     if (event.target.checked) {
       setPlaylistsToAddIds([...playlistsToAddIds, playlistID]);
     }
-    else  {
+    else {
       const newIds = playlistsToAddIds.filter(currID => currID !== playlistID)
       setPlaylistsToAddIds(newIds);
-    }    
-  }
-
-  //post post post post post post post post post
-  async function createSpotifyPlaylist() {
-    //create obj containing playlists to add name and songs to pass as body to post request
-    try {
-      const response = await fetch(`http://127.0.0.1:8080/spotify/playlist`, {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify("rope")
-      });
-      if (!response.ok) {
-        console.log(`error creating playlist from Spotify API`);
-        return;
-      }
-    //const fetchedSongs = await response.json();
-    } catch(err) {
-      console.log(err);
     }
   }
-  
+
   return (
     <div>
       <p>Select which provider to get playlists from:</p>
-      <button onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/gen-auth'}> Login to Youtube</button>
-      <br/>
+      <button onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/login'}> Login to Youtube</button>
+      <br />
       <button onClick={() => window.location.href = 'http://127.0.0.1:8080/spotify/login'}> Login to Spotify </button>
       <br />
-      <p>Currently signed into {currentService}. Select which playlist(s) to transfer: </p>
+      <p>Currently signed into {currentService.charAt(0).toUpperCase() + currentService.slice(1)}. Select which playlist(s) to transfer: </p>
       {/* Display all playlists */}
-      {allPlaylists.map((playlist:any) => {
-        return(
+      {allPlaylists.map((playlist: any) => {
+        return (
           <div key={playlist.id}>
-            <img src={playlist.image}/>
-            <input type="checkbox" id={playlist.title} name={playlist.title} onChange={(event) => handlePlaylistCheck(playlist.id, event)}/>
+            <img src={playlist.image} />
+            <input type="checkbox" id={playlist.title} name={playlist.title} onChange={(event) => handlePlaylistCheck(playlist.id, event)} />
             <label htmlFor={playlist.title}>{playlist.title}</label>
-          </div>
-        );
-      })}  
-      <br />
-      <button onClick={() => getPlaylistsToAdd()}> Click to display playlist(s) to add info</button>
-      <br />
-      <br />
-      {playlistsToAddIds.map((id: string, index: number) => {
-        return (
-          <div key={index}>
-            {id}
+            {/*list out songs if this playlist is checked to be added*/}
           </div>
         );
       })}
-      {playlistsToAdd.map((playlist:any) => {
-        return (
-          <div key={playlist.id}>
-            {playlist.name + " Playlist"}
-            <img src={playlist.image}/>
-            {playlist.songs.map((song: any, index: number) => {
-              return(
-                <div key={index}>
-                {song.artist + " - "}
-                {song.title}
-                <img src={song.image}></img>
-              </div>
-              );
-            })}
-            <br/>
-          </div>  
-        );
-      })}
-      <p>Select which provider to transfer playlist(s) to:</p>
-      <button onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/gen-auth'}> Login to Youtube</button>
-      <br/>
-      <button onClick={() => window.location.href = 'http://127.0.0.1:8080/spotify/login'}> Login to Spotify </button>
       <br />
-      <button>Transfer playlist(s) to Youtube</button>
-      <button onClick={() => createSpotifyPlaylist()}>Transfer playlist(s) to Spotify</button>
+      <br />
+      {/* set playlists to add to localstorage so the data needed persists to the next page*/}
+      <Link to="/transfer-playlists"><button onClick={() => localStorage.setItem("playlists", JSON.stringify(playlistsToAdd))}>Go to transfer page</button></Link>
     </div>
   )
 }
 
-export default App
+export default GetPlaylists
