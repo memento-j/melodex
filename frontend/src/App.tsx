@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from 'react';
+import { useEffect, useState, type ChangeEvent } from 'react';
 import { parseYTSongInfo } from './youtubeParse';
 
 function App() {
@@ -7,10 +7,30 @@ function App() {
   const [playlistsToAdd, setPlaylistsToAdd] = useState<object[]>([]);
   const [currentService, setCurrentService] = useState<string>("none");
 
+  useEffect(() => {
+    getCurrentService();
+  }, [])
+
+  async function getCurrentService() {
+    try {
+      const response = await fetch("http://127.0.0.1:8080/current-service", {
+        credentials: 'include'
+      });
+      if (!response.ok) {
+        console.log("no service signed into");
+      }
+      const currentService = await response.json();
+      setCurrentService(currentService.service);
+    } catch(err) {
+      console.log(err);
+      
+    }
+  }
+
   //get current user's youtube playlists
   async function getYoutubePlaylists() {
     try {
-      const response = await fetch(`http://localhost:8080/youtube/playlists`, {
+      const response = await fetch(`http://127.0.0.1:8080/youtube/playlists`, {
         credentials: 'include'
       });
       if (!response.ok) {
@@ -132,23 +152,6 @@ function App() {
     }
   }
 
-  //post post post post post post post post post
-  async function createSpotifyPlaylist() {
-    try {
-      const response = await fetch(`http://127.0.0.1:8080/spotify/playlist`, {
-        method: "POST",
-        credentials: "include",
-      });
-      if (!response.ok) {
-        console.log(`error creating playlist from Spotify API`);
-        return;
-      }
-      //const fetchedSongs = await response.json();
-    } catch(err) {
-      console.log(err);
-    }
-  }
-
   //store ids of playlists to be transfered
   function handlePlaylistCheck(playlistID: string, event: ChangeEvent<HTMLInputElement>) {
     //set current playlist empty
@@ -161,16 +164,37 @@ function App() {
       setPlaylistsToAddIds(newIds);
     }    
   }
+
+  //post post post post post post post post post
+  async function createSpotifyPlaylist() {
+    //create obj containing playlists to add name and songs to pass as body to post request
+    try {
+      const response = await fetch(`http://127.0.0.1:8080/spotify/playlist`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify("rope")
+      });
+      if (!response.ok) {
+        console.log(`error creating playlist from Spotify API`);
+        return;
+      }
+    //const fetchedSongs = await response.json();
+    } catch(err) {
+      console.log(err);
+    }
+  }
   
   return (
     <div>
-      <p>Select which provider to get playlist from:</p>
-      <a href={`http://localhost:8080/youtube/gen-auth`}> Login to Youtube</a>
+      {currentService}
+      <p>Select which provider to get playlists from:</p>
+      <button onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/gen-auth'}> Login to Youtube</button>
       <br/>
-      <a href={`http://localhost:8080/spotify/login`}> Login to Spotify </a>
+      <button onClick={() => window.location.href = 'http://127.0.0.1:8080/spotify/login'}> Login to Spotify </button>
       <br />
       <button onClick={() => getYoutubePlaylists()}>Get playlists from Youtube</button>
       <button onClick={() => getSpotifyPlaylists()}>Get playlists from Spotify</button>
+      <p>Select which playlist(s) to transfer: </p>
       {/* Display all playlists */}
       {allPlaylists.map((playlist:any) => {
         return(
@@ -180,12 +204,11 @@ function App() {
             <label htmlFor={playlist.title}>{playlist.title}</label>
           </div>
         );
-      })}     
+      })}  
       <br />
-      <p>Playlist Selected from {currentService}? Select which provider to transfer to:</p>
-      <button onClick={() => getPlaylistsToAdd()}> Click to display playlist(s) to add</button>
-      <button>Transfer to Youtube</button>
-      <button onClick={() => createSpotifyPlaylist()}>Transfer to Spotify</button>
+      <button onClick={() => getPlaylistsToAdd()}> Click to display playlist(s) to add info</button>
+      <br />
+      <br />
       {playlistsToAddIds.map((id: string, index: number) => {
         return (
           <div key={index}>
@@ -193,7 +216,6 @@ function App() {
           </div>
         );
       })}
-      {playlistsToAdd.length}
       {playlistsToAdd.map((playlist:any, index: number) => {
         return (
           <div key={index}>
@@ -212,6 +234,13 @@ function App() {
           </div>  
         );
       })}
+      <p>Select which provider to transfer playlist(s) to:</p>
+      <button onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/gen-auth'}> Login to Youtube</button>
+      <br/>
+      <button onClick={() => window.location.href = 'http://127.0.0.1:8080/spotify/login'}> Login to Spotify </button>
+      <br />
+      <button>Transfer playlist(s) to Youtube</button>
+      <button onClick={() => createSpotifyPlaylist()}>Transfer playlist(s) to Spotify</button>
     </div>
   )
 }

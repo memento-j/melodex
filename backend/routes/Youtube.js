@@ -3,6 +3,7 @@ const {google} = require('googleapis');
 const crypto = require('crypto');
 const express = require('express');
 const url = require('url');
+const { log } = require("console");
 const router = express.Router();
 
 /**
@@ -16,6 +17,9 @@ const oauth2Client = new google.auth.OAuth2(
   process.env.YOUTUBE_REDIRECT_URI
 );
 
+console.log(process.env.YOUTUBE_REDIRECT_URI);
+
+
 // Access scopes for YouTube API
 const scopes = [
   "https://www.googleapis.com/auth/youtube"
@@ -28,7 +32,6 @@ router.get("/gen-auth", (req,res) => {
 
   // Store state in the session
   req.session.state = state;
-
   // Generate a url that asks permissions for the Drive activity and Google Calendar scope
   const authorizationUrl = oauth2Client.generateAuthUrl({
     // 'online' (default) or 'offline' (gets refresh_token)
@@ -59,7 +62,9 @@ router.get('/oauth2callback', async (req, res) => {
   } else { // Get access and refresh tokens (if access_type is offline)
     let { tokens } = await oauth2Client.getToken(q.code);
     req.session.YTAuthTokens = tokens;
-    res.redirect('http://localhost:5173');
+    //set current service signed into to the session
+    req.session.currentService = "youtube";
+    res.redirect('http://127.0.0.1:5173');
   }
 });
 

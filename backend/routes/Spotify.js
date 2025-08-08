@@ -58,7 +58,8 @@ router.get('/callback', async (req, res) => {
     );
     //get generated access token and refresh token from response (thanks axios for automatic json parsing yay :D)
     req.session.SpotifyAuthTokens = response.data;
-    
+    //set current service signed into to the session
+    req.session.currentService = "spotify";
     //redirect to frontend with 200 response code
     res.redirect('http://127.0.0.1:5173');
 
@@ -77,7 +78,7 @@ router.get("/playlists", async (req,res) => {
       }
     });
     const playlists = response.data.items;
-    
+    console.log(req.session.id, " in playlists route");
     return res.json(playlists);
 
   } catch(err) {
@@ -95,7 +96,6 @@ router.get("/playlist", async (req, res) => {
   //get playlist's song info
   try {
     const response = await axios.get(`https://api.spotify.com/v1/playlists/${playtlistId}/tracks`, 
-
       {
       headers: {
         Authorization: "Bearer " + req.session.SpotifyAuthTokens.access_token
@@ -137,6 +137,7 @@ router.post("/playlist", async (req, res) => {
       }
     });
     console.log(createPlaylistRes.data);
+
     
   } catch(err) {
     res.status(400).json({message: `error creating ${playlistName}`})
