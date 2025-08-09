@@ -132,6 +132,7 @@ router.post("/playlists", async (req, res) => {
   //retrieve playlist info from body
   const playlists = req.body;
 
+  //add each playlist provided from the request body
   for (const playlist of playlists) {
     try {
       //get user's id to create playlist with it
@@ -186,18 +187,18 @@ router.post("/playlists", async (req, res) => {
         headers: {
           Authorization: "Bearer " + req.session.SpotifyAuthTokens.access_token
         }
-      });      
+      });    
+      //ensures songs were added to the plaaylist  
       if (addSongsRes.status != 201) {
         return res.status(500).json({message: "error adding songs to newly created playlist"});
       }
-
-      //return with successfly created status code response and message
-      return res.status(201).json({message: "playlists successfully added"})
 
     } catch(err) {
       return res.status(400).json({message: `error creating ${playlist.name}`});
     }
   }
+  //return with successfly created status code response and message
+  return res.status(201).json({message: "playlists successfully added"});
 });
 
 module.exports = router;
