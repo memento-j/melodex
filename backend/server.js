@@ -38,5 +38,6 @@ app.get("/current-service", (req,res) => {
   return res.json({service: req.session.currentService})
 })
 
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(8080, '127.0.0.1', () => {
+  console.log(`Express app listening at http://127.0.0.1:8080`);
+});

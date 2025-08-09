@@ -25,6 +25,8 @@ const scopes = [
 router.get("/login", (req,res) => {
   // Generate a secure random state value.
   const state = crypto.randomBytes(32).toString('hex');
+  //saves the purpose of the login (either to get or create playlists)
+  req.session.purpose = req.query.purpose
   // Store state in the session
   req.session.state = state;
   // Generate a url that asks permissions for the Drive activity and Google Calendar scope
@@ -59,7 +61,11 @@ router.get('/oauth2callback', async (req, res) => {
     req.session.YTAuthTokens = tokens;
     //set current service signed into to the session
     req.session.currentService = "youtube";
-    res.redirect('http://127.0.0.1:5173/get-playlists');
+    //redirect to different frontend routes depending on what operation is being done (getting/transferring)
+    if (req.session.purpose === "transfer") {
+      return res.redirect('http://127.0.0.1:5173/transfer-playlists')
+    }
+    return res.redirect('http://127.0.0.1:5173/get-playlists');
   }
 });
 

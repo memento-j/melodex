@@ -3,6 +3,7 @@ const express = require('express');
 const crypto = require('crypto');
 const querystring = require("querystring");
 const axios = require("axios");
+const { log } = require("console");
 const router = express.Router();
 
 
@@ -15,7 +16,8 @@ router.get('/login', (req, res) => {
   // Generate a secure random state value.
   const state = crypto.randomBytes(32).toString('hex');
   const scope = 'playlist-read-private playlist-read-collaborative playlist-modify-private playlist-modify-public';
-
+  //saves the purpose of the login (either to get or create playlists)
+  req.session.purpose = req.query.purpose
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       client_id: client_id,
@@ -60,8 +62,11 @@ router.get('/callback', async (req, res) => {
     req.session.SpotifyAuthTokens = response.data;
     //set current service signed into to the session
     req.session.currentService = "spotify";
-    //redirect to frontend
-    res.redirect('http://127.0.0.1:5173/get-playlists');
+    //redirect to different frontend routes depending on what operation is being done (getting/transferring)
+    if (req.session.purpose === "transfer") {
+      return res.redirect('http://127.0.0.1:5173/transfer-playlists')
+    }
+    return res.redirect('http://127.0.0.1:5173/get-playlists');
 
   } catch (error) {
     console.error('Token exchange failed:', error.response?.data || error.message);
@@ -113,9 +118,16 @@ router.post("/playlist", async (req, res) => {
   //check if there is a spotify auth token
   //check to ensure req.body song title and artist are not blank
 
+  //check if the user logged in to their service with the intent to transfer
+  if (req.session.purpose !== "transfer") {
+    return res.status(400).json({message: "User has not signed in to transfer yet"})
+  }
+
+
+  console.log(req.body);
+  return;
   //get playlistname and songs info from request body
   //const { playlistName } = req.body;
-  const playlistName = "rope";
   try {
     //get user's id to create playlist with it
     const response = await axios.get("https://api.spotify.com/v1/me", {
@@ -139,7 +151,7 @@ router.post("/playlist", async (req, res) => {
 
     
   } catch(err) {
-    res.status(400).json({message: `error creating ${playlistName}`})
+    return res.status(400).json({message: `error creating ${playlistName}`})
   }
 
   //create playlist

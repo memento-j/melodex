@@ -7,12 +7,9 @@ function GetPlaylists() {
   const [playlistsToAddIds, setPlaylistsToAddIds] = useState<string[]>([]);
   const [playlistsToAdd, setPlaylistsToAdd] = useState<object[]>([]);
   const [currentService, setCurrentService] = useState<string>("none");
-  const [readyToTransfer, setReadyToTransfer] = useState<boolean>(false);
 
   //gets current service being used on mount
   useEffect(() => {
-    console.log(readyToTransfer);
-
     getCurrentService();
   }, [])
 
@@ -192,9 +189,9 @@ function GetPlaylists() {
   return (
     <div>
       <p>Select which provider to get playlists from:</p>
-      <button onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/login'}> Login to Youtube</button>
+      <button onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/login?purpose=get'}> Login to Youtube</button>
       <br />
-      <button onClick={() => window.location.href = 'http://127.0.0.1:8080/spotify/login'}> Login to Spotify </button>
+      <button onClick={() => window.location.href = 'http://127.0.0.1:8080/spotify/login?purpose=get'}> Login to Spotify </button>
       <br />
       <p>Currently signed into {currentService.charAt(0).toUpperCase() + currentService.slice(1)}. Select which playlist(s) to transfer: </p>
       {/* Display all playlists */}
@@ -211,7 +208,12 @@ function GetPlaylists() {
       <br />
       <br />
       {/* set playlists to add to localstorage so the data needed persists to the next page*/}
-      <Link to="/transfer-playlists"><button onClick={() => localStorage.setItem("playlists", JSON.stringify(playlistsToAdd))}>Go to transfer page</button></Link>
+      <Link to="/transfer-playlists">
+        <button 
+          onClick={() => localStorage.setItem("playlists", JSON.stringify(playlistsToAdd))}>
+            Go to transfer page
+        </button>
+      </Link>
     </div>
   )
 }

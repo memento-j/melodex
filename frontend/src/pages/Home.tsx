@@ -1,5 +1,7 @@
+import { Link } from "react-router-dom";
+
 export default function Home() {
     return(
-        <p>cool landing page</p>
+        <Link to="/get-playlists"><button>Click to start tranferring</button></Link>
     );
 }
