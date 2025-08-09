@@ -113,50 +113,91 @@ router.get("/playlist", async (req, res) => {
   }
 });
 
-//create playlist
-router.post("/playlist", async (req, res) => {
-  //check if there is a spotify auth token
-  //check to ensure req.body song title and artist are not blank
+//helper function to search for songs
+async function searchSong(name, artist) {
+  try {
 
+    
+  } catch (err) {
+    console.log(err," error searching for ", artist, " - " ,name);
+  }
+}
+
+//create spotify playlists
+router.post("/playlists", async (req, res) => {
   //check if the user logged in to their service with the intent to transfer
   if (req.session.purpose !== "transfer") {
     return res.status(400).json({message: "User has not signed in to transfer yet"})
   }
+  //retrieve playlist info from body
+  const playlists = req.body;
 
-
-  console.log(req.body);
-  return;
-  //get playlistname and songs info from request body
-  //const { playlistName } = req.body;
-  try {
-    //get user's id to create playlist with it
-    const response = await axios.get("https://api.spotify.com/v1/me", {
-      headers: {
-        Authorization: "Bearer " + req.session.SpotifyAuthTokens.access_token
+  for (const playlist of playlists) {
+    try {
+      //get user's id to create playlist with it
+      const response = await axios.get("https://api.spotify.com/v1/me", {
+        headers: {
+          Authorization: "Bearer " + req.session.SpotifyAuthTokens.access_token
+        }
+      });
+      if (response.status != 200) {
+        return res.status(500).json({message: `error getting useer's spotify account data`});
       }
-    });
-    const userID = response.data.id;
-    
-    //create empty playlist of name gotten from request body
-    const createPlaylistRes = await axios.post(`https://api.spotify.com/v1/users/${userID}/playlists`, 
+      const userID = response.data.id;
+      
+      //create empty playlist of name gotten from request body
+      const createPlaylistRes = await axios.post(`https://api.spotify.com/v1/users/${userID}/playlists`, 
+        {
+          name: playlist.name 
+        },
+        {
+        headers: {
+          Authorization: "Bearer " + req.session.SpotifyAuthTokens.access_token
+        }
+      });
+      if (createPlaylistRes.status != 201) {
+        return res.status(500).json({message: `error creating Spotify playlist ${playlist.name}`});
+      }
+      //get id from new empty playlist created (used to add items to playlist)
+      const newPlaylistId = createPlaylistRes.data.id;
+      
+      //go through each song, getting the artist and name and searching for it
+      const songsToAdd = playlist.songs;
+      const songUris = [];
+       //get the URIs for the songs that need to be added and add them to an arraay
+      for (const song of songsToAdd) {
+        const songRes = await axios.get(`https://api.spotify.com/v1/search?q=${song.artist+"+"+song.title.replace(" ", "+")}&type=track`, {
+          headers: {
+            Authorization: "Bearer " + req.session.SpotifyAuthTokens.access_token
+          }
+        });
+        if (songRes.status !== 200) {
+          return res.status(500).json({message: `error seaching for ${song.artist, song.title}`});
+        }
+        songUris.push(songRes.data.tracks.items[0].uri);
+      }
+      
+      //using the array of uris, add the songs to the playlist
+      const addSongsRes = await axios.post(`https://api.spotify.com/v1/playlists/${newPlaylistId}/tracks`, 
       {
-        name: playlistName 
+        uris: songUris
       },
       {
-      headers: {
-        Authorization: "Bearer " + req.session.SpotifyAuthTokens.access_token
+        headers: {
+          Authorization: "Bearer " + req.session.SpotifyAuthTokens.access_token
+        }
+      });      
+      if (addSongsRes.status != 201) {
+        return res.status(500).json({message: "error adding songs to newly created playlist"});
       }
-    });
-    console.log(createPlaylistRes.data);
 
-    
-  } catch(err) {
-    return res.status(400).json({message: `error creating ${playlistName}`})
+      //return with successfly created status code response and message
+      return res.status(201).json({message: "playlists successfully added"})
+
+    } catch(err) {
+      return res.status(400).json({message: `error creating ${playlist.name}`});
+    }
   }
-
-  //create playlist
-  //search for each song's uri
-  //using the songs` uri, add the songs to the playlist
 });
 
 module.exports = router;

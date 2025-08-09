@@ -130,7 +130,7 @@ router.get("/playlist", async (req,res) => {
 
 //search for each song and store the video id
 //get playlist name and eacch song's video id and create api body to create the playlist
-router.post("/playlist", async (req, res) => {
+router.post("/playlists", async (req, res) => {
   //check if authorization token is available
   if (!req.session) {
     res.status(401).json({ error: 'User not authenticated (create  playlist)' });

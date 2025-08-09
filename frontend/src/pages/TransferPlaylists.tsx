@@ -28,9 +28,10 @@ export default function TransferPlaylists() {
         }
     }
 
+    //call the api route based on the current service
     async function handleTransfer() {
         try {
-            const response = await fetch(`http://127.0.0.1:8080/${currentService}/playlist`, {
+            const response = await fetch(`http://127.0.0.1:8080/${currentService}/playlists`, {
                 method: "POST",
                 credentials: "include",
                 headers: {
