@@ -3,6 +3,7 @@ const {google} = require('googleapis');
 const crypto = require('crypto');
 const express = require('express');
 const url = require('url');
+const { log } = require("console");
 const router = express.Router();
 
 /**
@@ -131,12 +132,82 @@ router.get("/playlist", async (req,res) => {
 //search for each song and store the video id
 //get playlist name and eacch song's video id and create api body to create the playlist
 router.post("/playlists", async (req, res) => {
-  //check if authorization token is available
-  if (!req.session) {
-    res.status(401).json({ error: 'User not authenticated (create  playlist)' });
+
+  //check if acceess token is available. If not, set it
+  try {
+    await oauth2Client.getAccessToken();
+  } catch {
+    //check if auth tokens are available first, if not available return error messaage
+    if (!req.session.YTAuthTokens) {
+      return res.status(401).json({ error: 'User not authenticated (create  playlist)' });
+    }
+    //no access token so set credentials
+    oauth2Client.setCredentials(req.session.YTAuthTokens);
   }
-  console.log("hi");
+
+  //retrieve playlist info from body
+  const playlists = req.body;
   
+  const service = google.youtube('v3');
+
+  for (const playlist of playlists) {
+    const newPlaylistId = "";
+    try {
+    //create new playlist based on the playlist's title and set it to private
+    const createPlaylistRes = await service.playlists.insert({
+      "auth": oauth2Client,
+      "part": "snippet,status,id",
+      "requestBody": {
+        snippet: {
+          title: playlist.name
+        },
+        status: {
+          privacyStatus: "private"
+        }
+      }
+    }); 
+    if (createPlaylistRes.status == 403) {
+      return;
+    }
+    //get created playlist's id, so things can be added to it later
+    newPlaylistId = createPlaylistRes.data.id;
+    } catch(err) {
+      console.log(err);
+    }  
+    
+    let videoIds = []
+    //search the songs and store each song's id
+    for (const song of playlist.songs) {
+      //search song and add its video ids
+      try {
+        const response = await service.search.list({
+          auth: oauth2Client,
+          part: "snippet,id",
+          maxResults: 1,
+          q: `${song.artist} ${song.title}`
+        });
+        // trusting youtube's search algorithm and return id of first result
+        const videoId = response.data.items[0].id;
+        videoIds.push(videoId);
+      } catch(err) {
+        console.log(err);
+      }
+
+      //add videos to created playlist
+
+
+      
+      //scrape songs from youtube site using puppeteer maybe
+
+      //look into ytmusicapi python
+
+
+      /////video id will be in video url
+      //// and resource kind will always be video
+      // save songs in a db incase the same songs are used and indeex the video id that way?
+    }
+    console.log(videoIds);
+  }
 });
 
 module.exports = router;

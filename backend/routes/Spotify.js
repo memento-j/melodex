@@ -173,7 +173,7 @@ router.post("/playlists", async (req, res) => {
           }
         });
         if (songRes.status !== 200) {
-          return res.status(500).json({message: `error seaching for ${song.artist, song.title}`});
+          console.log(`error seaching for ${song.artist, song.title}`);
         }
         songUris.push(songRes.data.tracks.items[0].uri);
       }
@@ -198,7 +198,7 @@ router.post("/playlists", async (req, res) => {
     }
   }
   //return with successfly created status code response and message
-  return res.status(201).json({message: "playlists successfully added"});
+  return res.status(201).json({message: "playlists added"});
 });
 
 module.exports = router;

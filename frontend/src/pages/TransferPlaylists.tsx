@@ -6,6 +6,7 @@ export default function TransferPlaylists() {
     const stored = localStorage.getItem("playlists");
     const playlists = stored ? JSON.parse(stored) : [];
     const [currentService, setCurrentService] = useState<string>("none");
+    const [hasTransferred ,setHasTransferred] = useState<boolean>(false);
 
     //gets current service signed into on mount
     useEffect(() => {
@@ -39,9 +40,11 @@ export default function TransferPlaylists() {
                 },
                 body: JSON.stringify(playlists)
             });
-            if (!response.ok) {
+            if (response.status != 201) {
                 console.log("error transferring");
+                return;
             }
+            console.log(`Successfully transferred to ${currentService} :)`);
         } catch (err) {
             console.log(err);
         }
@@ -50,10 +53,6 @@ export default function TransferPlaylists() {
     return (
         <div>
             {currentService}
-            <p>Select which provider to transfer playlist(s) to:</p>
-            <button onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/login?purpose=transfer'}> Login to Youtube</button>
-            <br />
-            <button onClick={() => window.location.href = 'http://127.0.0.1:8080/spotify/login?purpose=transfer'}> Login to Spotify </button>
             <br />
             <Link to="/get-playlists"><button>Click to go back</button></Link>
             <p>Playlist(s) to be transferred: </p>
@@ -75,6 +74,10 @@ export default function TransferPlaylists() {
                     </div>
                 );
             })}
+            <p>Select which provider to transfer playlist(s) to:</p>
+            <button onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/login?purpose=transfer'}> Login to Youtube</button>
+            <br />
+            <button onClick={() => window.location.href = 'http://127.0.0.1:8080/spotify/login?purpose=transfer'}> Login to Spotify </button>
             <button onClick={() => handleTransfer()}>Transfer</button>
         </div>
     );
