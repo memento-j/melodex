@@ -1,6 +1,14 @@
-import { useEffect, useState, type ChangeEvent } from 'react';
+import { useEffect, useState} from 'react';
 import { parseYTSongInfo } from '../youtubeParse';
 import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label"
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import {
+  Card,
+  CardContent,
+} from "@/components/ui/card";
 
 function GetPlaylists() {
   const [allPlaylists, setAllPlaylists] = useState<object[]>([]);
@@ -39,9 +47,6 @@ function GetPlaylists() {
       const response = await fetch("http://127.0.0.1:8080/current-service", {
         credentials: 'include'
       });
-      if (!response.ok) {
-        console.log("no service signed into");
-      }
       const currentService = await response.json();
       setCurrentService(currentService.service);
     } catch (err) {
@@ -174,10 +179,10 @@ function GetPlaylists() {
   }
 
   //store ids of playlists to be transfered
-  function handlePlaylistCheck(playlistID: string, event: ChangeEvent<HTMLInputElement>) {
+  function handlePlaylistCheck(playlistID: string, checked: boolean) {
     //set current playlist empty
     setPlaylistsToAdd([]);
-    if (event.target.checked) {
+    if (checked) {
       setPlaylistsToAddIds([...playlistsToAddIds, playlistID]);
     }
     else {
@@ -188,32 +193,66 @@ function GetPlaylists() {
 
   return (
     <div>
-      <p>Select which provider to get playlists from:</p>
-      <button onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/login?purpose=get'}> Login to Youtube</button>
-      <br />
-      <button onClick={() => window.location.href = 'http://127.0.0.1:8080/spotify/login?purpose=get'}> Login to Spotify </button>
-      <br />
-      <p>Currently signed into {currentService.charAt(0).toUpperCase() + currentService.slice(1)}. Select which playlist(s) to transfer: </p>
-      {/* Display all playlists */}
-      {allPlaylists.map((playlist: any) => {
-        return (
-          <div key={playlist.id}>
-            <img src={playlist.image} />
-            <input type="checkbox" id={playlist.title} name={playlist.title} onChange={(event) => handlePlaylistCheck(playlist.id, event)} />
-            <label htmlFor={playlist.title}>{playlist.title}</label>
-            {/*list out songs if this playlist is checked to be added*/}
-          </div>
-        );
-      })}
-      <br />
-      <br />
-      {/* set playlists to add to localstorage so the data needed persists to the next page*/}
-      <Link to="/transfer-playlists">
-        <button 
-          onClick={() => localStorage.setItem("playlists", JSON.stringify(playlistsToAdd))}>
-            Go to transfer page
-        </button>
-      </Link>
+      {/* Show music service login options */}
+      <section className="min-h-screen bg-gradient-to-b from-background to-muted p-6 dark">
+        {currentService == "none" && 
+        <div>
+          <p className='text-muted-foreground text-4xl p-5'>Select which provider to get playlist(s) from:</p>
+          <Button variant="outline" className='text-muted-foreground text-xl m-2' size="lg"  
+            onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/login?purpose=get'}>
+              Login to Youtube
+          </Button>
+          <Button variant="outline" className='text-muted-foreground text-xl m-2' size="lg"  
+            onClick={() => window.location.href = 'http://127.0.0.1:8080/spotify/login?purpose=get'}> 
+              Login to Spotify 
+          </Button>
+        </div>
+        }
+
+        {/* Show the playlists retrieved from the current service */}
+        {currentService != "none" &&
+        <div className='flex flex-col items-center mt-40'>
+          {/* Let user know which service they are currently signed into*/}
+          <Button variant="outline" className='text-muted-foreground text-xl mb-15' size="lg"
+            onClick={() => setCurrentService("none")}
+          >
+            <ArrowLeft className="w-4 h-4"/>Go Back To Music Service Login
+          </Button>
+          <p className="text-muted-foreground text-4xl p-5 mb-5">Currently signed into {currentService.charAt(0).toUpperCase() + currentService.slice(1)}. Select which playlists to transfer: </p>
+
+          {/* Display all playlists */}
+          {allPlaylists.map((playlist: any) => {
+            return (
+                <Card key={playlist.id} className='w-120 m-1'>
+                  <CardContent className='flex items-center gap-4'>
+                  <img className="size-30 object-cover rounded" src={playlist.image} />
+                  {/* passing checked==true because of how shadcn works. 3 states true, false, or interminate. passing true treats the other two states as false so theere can be two outcomes (since the function wants a boolean*/}
+                  <div className="flex flex-col flex-grow">
+                    <Label
+                      className="text-muted-foreground text-2xl"
+                      htmlFor={playlist.title}
+                    >
+                      {playlist.title}
+                    </Label>
+                  </div>
+                  <Checkbox id={playlist.title} name={playlist.title} className='mt-2 ml-5 size-5'
+                    onCheckedChange={(checked) => handlePlaylistCheck(playlist.id, checked == true)} 
+                  />
+                  </CardContent>
+                </Card>
+            );
+          })}
+
+          {/* set playlists to add to localstorage so the data needed persists to the next page*/}
+          <Link to="/transfer-playlists" className='mt-10'>
+            <Button variant="outline" className='text-muted-foreground text-xl' size="lg" 
+              onClick={() => localStorage.setItem("playlists", JSON.stringify(playlistsToAdd))}>
+                Go to transfer page<ArrowRight className="w-4 h-4" />
+            </Button>
+          </Link>
+        </div>
+        }
+      </section>
     </div>
   )
 }

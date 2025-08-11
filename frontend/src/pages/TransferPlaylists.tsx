@@ -1,12 +1,20 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+  } from "@/components/ui/accordion"
+import { Arrow } from "@radix-ui/react-dropdown-menu";
 
 export default function TransferPlaylists() {
     //retrieve playlists from local storage
     const stored = localStorage.getItem("playlists");
     const playlists = stored ? JSON.parse(stored) : [];
     const [currentService, setCurrentService] = useState<string>("none");
-    const [hasTransferred ,setHasTransferred] = useState<boolean>(false);
 
     //gets current service signed into on mount
     useEffect(() => {
@@ -52,33 +60,57 @@ export default function TransferPlaylists() {
     
     return (
         <div>
-            {currentService}
-            <br />
-            <Link to="/get-playlists"><button>Click to go back</button></Link>
-            <p>Playlist(s) to be transferred: </p>
-            {playlists.map((playlist: any, index: number) => {
-                return (
-                    <div key={index}>
-                        <img src={playlist.image} />
-                        {playlist.name}
-                        {playlist.songs.map((song: any, index: number) => {
-                            return (
-                            <div key={index}>
-                                <img src={song.image}></img>
-                                {song.artist + " - "}
-                                {song.title}
-                            </div>
-                            );
-                        })}
-                        <br />
-                    </div>
-                );
-            })}
-            <p>Select which provider to transfer playlist(s) to:</p>
-            <button onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/login?purpose=transfer'}> Login to Youtube</button>
-            <br />
-            <button onClick={() => window.location.href = 'http://127.0.0.1:8080/spotify/login?purpose=transfer'}> Login to Spotify </button>
-            <button onClick={() => handleTransfer()}>Transfer</button>
+            <section className="min-h-screen bg-gradient-to-b from-background to-muted p-6 dark">
+
+                <p className="text-muted-foreground text-4xl p-1 mb-5">Playlists to be transferred: </p>
+
+                {/* Lists playlists and their songs in an accordian */}
+                <Accordion type="multiple" className="">
+                {playlists.map((playlist: any, index: number) => (
+                        <AccordionItem value={index.toString()} key={index} className="m-5">
+                            <AccordionTrigger>
+                                <img src={playlist.image} className="size-20"/>
+                                <p className="text-muted-foreground text-3xl p-1 mb-5">{playlist.name}</p>
+                            </AccordionTrigger>
+                            <AccordionContent>
+                                {playlist.songs.map((song: any, index: number) => {
+                                    return (
+                                    <div key={index} className="flex gap-5">
+                                        <img src={song.image} className="size-20"/>
+                                        <p className="text-muted-foreground text-xl mt-[20px]">{song.artist + " - " + song.title}</p>
+                                    </div>
+                                    );
+                                })}
+                            </AccordionContent>
+                        </AccordionItem>
+                ))}
+                </Accordion>
+
+                {/* Allows user to go back if they want to add/remove playlists*/}
+                <p className="text-muted-foreground text-3xl p-1 mb-5 mt-15">Wrong playlists?</p>
+                <Link to="/get-playlists"><Button variant="outline" className='text-muted-foreground text-xl mb-10' size="lg"><ArrowLeft className="w-4 h-4"/>Click to go back</Button></Link>
+
+                {/* Asks user to sign into the service they would like to transfer their playlists to*/}
+                <p className="text-muted-foreground text-3xl p-1 mb-5">Everything look good? Select which provider to transfer your playlists to:</p>
+                <br />
+                <Button variant="outline" className='text-muted-foreground text-xl m-2' size="lg"
+                    onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/login?purpose=transfer'}
+                > 
+                    Login to Youtube
+                </Button>
+                <br />
+                <Button variant="outline" className='text-muted-foreground text-xl m-2' size="lg" 
+                    onClick={() => window.location.href = 'http://127.0.0.1:8080/spotify/login?purpose=transfer'}
+                >
+                    Login to Spotify 
+                </Button>
+                <br />
+                <Button variant="outline" className='text-muted-foreground text-xl ml-2 mt-20' size="lg"
+                    onClick={() => handleTransfer()}
+                >
+                    Transfer
+                </Button>
+            </section>
         </div>
     );
 }
