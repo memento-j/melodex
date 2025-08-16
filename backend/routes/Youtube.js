@@ -1,10 +1,11 @@
 require("dotenv").config({path: "../../priv/.env"});
+const express = require('express');
+const router = express.Router();
 const {google} = require('googleapis');
 const crypto = require('crypto');
-const express = require('express');
 const url = require('url');
+const youtubesearchapi = require("youtube-search-api");
 const { log } = require("console");
-const router = express.Router();
 
 /**
  * To use OAuth2 authentication, we need access to a CLIENT_ID, CLIENT_SECRET, AND REDIRECT_URI
@@ -97,13 +98,7 @@ router.get("/playlists", async (req, res) => {
       return res.json(playlists);
     }
   });
-
 });
-
-/** Save credential to the global variable in case access token was refreshed.
-  * ACTION ITEM: In a production app, you likely want to save the refresh token
-  *              in a secure persistent database instead. */
-//userCredential = tokens;
 
 //get individual user playlist
 router.get("/playlist", async (req,res) => {
@@ -128,6 +123,39 @@ router.get("/playlist", async (req,res) => {
     });
 });    
 
+function formatDuration(ms) {
+  const totalSeconds = Math.floor(ms / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  // Add leading zero if seconds < 10
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
+//helper function to get video id for the current song from search results 
+// by comparing video duration with the given song duration
+function getSongId(searchedResults, song) {
+
+  //// Explanation for using two times to try and match with:   
+  ////
+  //// Most of the time on youtube the video duration is a second longer than the actual duration (ex: 4:00 song is 4:01 on youtube),
+  //// and then sometimes it is the exact duration. 
+  //// To account for this, i will check for both using OR and check for the longer song duration first since it is more common
+  
+  //converts song duration from ms to minutes:seconds format
+  const time = formatDuration(song.duration);
+  const timeExtra = formatDuration(song.duration+1000);
+  
+  //go through each youtube search result, to find the correct video
+  for (const searchedSong of searchedResults) {
+    if (timeExtra == searchedSong.length.simpleText ||
+       time == searchedSong.length.simpleText) {
+        //return video id of the matched song
+        return searchedSong.id;
+    }
+  }
+}
+
 
 //search for each song and store the video id
 //get playlist name and eacch song's video id and create api body to create the playlist
@@ -147,11 +175,13 @@ router.post("/playlists", async (req, res) => {
 
   //retrieve playlist info from body
   const playlists = req.body;
-  
   const service = google.youtube('v3');
 
+  //for each playlist, create playlist -> search for songs -> add search songs to created platlists
   for (const playlist of playlists) {
-    const newPlaylistId = "";
+    //playlistid later on once playlis is created and video ids are searched
+    let newPlaylistId = "";
+    
     try {
     //create new playlist based on the playlist's title and set it to private
     const createPlaylistRes = await service.playlists.insert({
@@ -166,6 +196,7 @@ router.post("/playlists", async (req, res) => {
         }
       }
     }); 
+    //forbidden status code
     if (createPlaylistRes.status == 403) {
       return;
     }
@@ -173,41 +204,54 @@ router.post("/playlists", async (req, res) => {
     newPlaylistId = createPlaylistRes.data.id;
     } catch(err) {
       console.log(err);
-    }  
-    
+    }
+
+    //stores video ids to be added to playlist later on
     let videoIds = []
     //search the songs and store each song's id
-    for (const song of playlist.songs) {
-      //search song and add its video ids
+    for (const song of playlist.songs) {      
+      //search song using youtubesearch API (to somewhat avoid youtube data api v3's quota limits)
       try {
-        const response = await service.search.list({
-          auth: oauth2Client,
-          part: "snippet,id",
-          maxResults: 1,
-          q: `${song.artist} ${song.title}`
-        });
-        // trusting youtube's search algorithm and return id of first result
-        const videoId = response.data.items[0].id;
-        videoIds.push(videoId);
-      } catch(err) {
-        console.log(err);
+        const data = await youtubesearchapi.GetListByKeyword(
+          `${song.artist} - ${song.title}`, //search query
+          false, //is playlist or not
+          10, //reponses limit
+          [{ type: "video" }] //media type
+        );
+        const searchedSongs = data.items;
+        //gets the video ids
+        videoIds.push(getSongId(searchedSongs, song));
+
+      } catch (error) {
+        console.error("YouTube Search API Error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
       }
-
-      //add videos to created playlist
-
-
-      
-      //scrape songs from youtube site using puppeteer maybe
-
-      //look into ytmusicapi python
-
-
-      /////video id will be in video url
-      //// and resource kind will always be video
-      // save songs in a db incase the same songs are used and indeex the video id that way?
     }
-    console.log(videoIds);
-  }
+    
+    //go through each video ID just retrieved and add them to the playlist created above using its ID
+    //youtube sadly does not have a mass playlist insert, so each must be done one by one
+    for (const currVideoId of videoIds) {
+      try {
+        const addSongRes = await service.playlistItems.insert({
+          "auth": oauth2Client,
+          "part": "snippet",
+          "requestBody": {
+            snippet : {
+              playlistId: newPlaylistId, //playlist id from when playlist was creted
+              resourceId: {
+                kind: "youtube#video",
+                videoId: currVideoId //the video id of the current
+              }
+            }
+          }
+        });
+      } catch (err) {
+        console.log("error adding song" , videoId, err);
+      }
+    }
+    console.log("added", playlist.name);
+  } 
+  return res.status(201);
 });
 
 module.exports = router;

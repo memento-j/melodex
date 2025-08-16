@@ -3,7 +3,6 @@ const express = require('express');
 const crypto = require('crypto');
 const querystring = require("querystring");
 const axios = require("axios");
-const { log } = require("console");
 const router = express.Router();
 
 

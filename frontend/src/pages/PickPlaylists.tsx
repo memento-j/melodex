@@ -10,6 +10,7 @@ import {
   CardContent,
 } from "@/components/ui/card";
 
+
 function GetPlaylists() {
   const [allPlaylists, setAllPlaylists] = useState<object[]>([]);
   const [playlistsToAddIds, setPlaylistsToAddIds] = useState<string[]>([]);
@@ -143,6 +144,7 @@ function GetPlaylists() {
                 "artist": song.track.artists[0].name,
                 "title": song.track.name,
                 "image": song.track.album.images[1].url,
+                "duration" : song.track.duration_ms
               });
             });
             break;
@@ -193,11 +195,11 @@ function GetPlaylists() {
 
   return (
     <div>
-      {/* Show music service login options */}
+      {/* Show music service login options (make own route)*/}
       <section className="min-h-screen bg-gradient-to-b from-background to-muted p-6 dark">
         {currentService == "none" && 
-        <div>
-          <p className='text-muted-foreground text-4xl p-5'>Select which provider to get playlist(s) from:</p>
+        <div className='flex flex-col items-center mt-50'>
+          <p className='text-muted-foreground text-4xl p-5 mb-10'>Select which provider to get playlist(s) from:</p>
           <Button variant="outline" className='text-muted-foreground text-xl m-2' size="lg"  
             onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/login?purpose=get'}>
               Login to Youtube
@@ -209,7 +211,7 @@ function GetPlaylists() {
         </div>
         }
 
-        {/* Show the playlists retrieved from the current service */}
+        {/* Show the playlists retrieved from the current service (move to own component)*/}
         {currentService != "none" &&
         <div className='flex flex-col items-center mt-40'>
           {/* Let user know which service they are currently signed into*/}
@@ -246,6 +248,7 @@ function GetPlaylists() {
           {/* set playlists to add to localstorage so the data needed persists to the next page*/}
           <Link to="/transfer-playlists" className='mt-10'>
             <Button variant="outline" className='text-muted-foreground text-xl' size="lg" 
+            
               onClick={() => localStorage.setItem("playlists", JSON.stringify(playlistsToAdd))}>
                 Go to transfer page<ArrowRight className="w-4 h-4" />
             </Button>

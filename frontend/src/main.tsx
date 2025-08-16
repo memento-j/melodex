@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './index.css'
-import GetPlaylists from './pages/GetPlaylists';
+import GetPlaylists from './pages/PickPlaylists';
 import TransferPlaylists from './pages/TransferPlaylists';
 import Home from './pages/Home';
 
