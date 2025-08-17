@@ -9,6 +9,7 @@ import {
   Card,
   CardContent,
 } from "@/components/ui/card";
+import Navbar from '@/components/Navbar';
 
 
 function GetPlaylists() {
@@ -195,6 +196,7 @@ function GetPlaylists() {
 
   return (
     <div>
+      <Navbar />
       {/* Show music service login options (make own route)*/}
       <section className="min-h-screen bg-gradient-to-b from-background to-muted p-6 dark">
         {currentService == "none" && 
