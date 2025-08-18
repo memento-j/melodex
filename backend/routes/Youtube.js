@@ -67,7 +67,7 @@ router.get('/oauth2callback', async (req, res) => {
     if (req.session.purpose === "transfer") {
       return res.redirect('http://127.0.0.1:5173/transfer-playlists')
     }
-    return res.redirect('http://127.0.0.1:5173/get-playlists');
+    return res.redirect('http://127.0.0.1:5173/select-playlists');
   }
 });
 

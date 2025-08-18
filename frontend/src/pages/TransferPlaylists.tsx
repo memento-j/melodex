@@ -8,6 +8,7 @@ import {
     AccordionItem,
     AccordionTrigger,
   } from "@/components/ui/accordion"
+import Navbar from "@/components/Navbar";
 
 export default function TransferPlaylists() {
     //retrieve playlists from local storage
@@ -61,8 +62,8 @@ export default function TransferPlaylists() {
     
     return (
         <div>
+            <Navbar />
             <section className="min-h-screen bg-gradient-to-b from-background to-muted p-6 dark">
-
                 { !readyToTransfer &&
                     <div>
                         <p className="text-muted-foreground text-4xl p-1 my-30 text-center">Playlists to be transferred </p>
@@ -82,7 +83,7 @@ export default function TransferPlaylists() {
                                             {playlist.songs.map((song: any, index: number) => {
                                                 return (
                                                 <div key={index} className="flex gap-5 items-center">
-                                                    <img src={song.image} className="size-30 object-cover rounded"/>
+                                                    <img src={song.image} className="size-30 object-cover rounded my-0.5"/>
                                                     <p className="text-muted-foreground text-xl">{song.artist + " - " + song.title}</p>
                                                 </div>
                                                 );
@@ -111,22 +112,27 @@ export default function TransferPlaylists() {
                 {/* Asks user to sign into the service they would like to transfer their playlists to*/}
                 { readyToTransfer &&
                     <div className="flex flex-col justify-center items-center">
-                        <p className="text-muted-foreground text-3xl p-1 my-30">Select which provider to transfer your playlists to</p>
-                        <br />
-                        <Button variant="outline" className='text-muted-foreground text-xl m-2' size="lg"
+                        <Button variant="outline" className="text-muted-foreground text-xl mb-10 w-40 mt-60" size="lg"
+                            onClick={() => setReadyToTransfer(false)}
+                        >
+                            <ArrowLeft className="w-4 h-4" />Go back
+                        </Button>
+
+                        <p className="text-muted-foreground text-3xl p-1 mb-20">Select which provider to transfer your playlists to</p>
+
+                        <Button variant="outline" className='text-muted-foreground text-xl m-2 p-8' size="lg"
                             onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/login?purpose=transfer'}
                         > 
-                            Login to Youtube
+                            <img className='w-40 h-auto' src='/YouTube-White-Full-Color-Logo.wine.svg'/>
                         </Button>
-                        <br />
-                        <Button variant="outline" className='text-muted-foreground text-xl m-2' size="lg" 
+
+                        <Button variant="outline" className='text-muted-foreground text-xl m-2 p-8' size="lg" 
                             onClick={() => window.location.href = 'http://127.0.0.1:8080/spotify/login?purpose=transfer'}
                         >
-                            Login to Spotify 
+                            <img className="w-40 h-auto" src='/Spotify-Logo.wine.svg'/>
                         </Button>
-                        <br />
 
-                        <Button variant="outline" className='text-muted-foreground text-xl ml-2 mt-20' size="lg"
+                        <Button variant="outline" className='text-muted-foreground text-xl mt-20 w-40' size="lg"
                             onClick={() => handleTransfer()}
                         >
                             Transfer

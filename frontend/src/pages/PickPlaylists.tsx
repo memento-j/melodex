@@ -10,13 +10,15 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import Navbar from '@/components/Navbar';
+import { useNavigate } from 'react-router-dom';
 
 
-function GetPlaylists() {
+function PickPlaylists() {
   const [allPlaylists, setAllPlaylists] = useState<object[]>([]);
   const [playlistsToAddIds, setPlaylistsToAddIds] = useState<string[]>([]);
   const [playlistsToAdd, setPlaylistsToAdd] = useState<object[]>([]);
   const [currentService, setCurrentService] = useState<string>("none");
+  const navigate = useNavigate();
 
   //gets current service being used on mount
   useEffect(() => {
@@ -194,6 +196,17 @@ function GetPlaylists() {
     }
   }
 
+  function handleToTransferPage() {
+    //if playlist is empty, display toast saying the user cannot continue until they select playlists
+    if (playlistsToAdd.length == 0) {
+      console.log("no playlists");
+      return;
+    }
+    //otherwise, set playlists to local storage and navigate to the transfer page
+    localStorage.setItem("playlists", JSON.stringify(playlistsToAdd));
+    navigate("/transfer-playlists");
+  }
+
   return (
     <div>
       <Navbar />
@@ -201,14 +214,14 @@ function GetPlaylists() {
       <section className="min-h-screen bg-gradient-to-b from-background to-muted p-6 dark">
         {currentService == "none" && 
         <div className='flex flex-col items-center mt-50'>
-          <p className='text-muted-foreground text-4xl p-5 mb-10'>Select which provider to get playlist(s) from:</p>
-          <Button variant="outline" className='text-muted-foreground text-xl m-2' size="lg"  
+          <p className='text-muted-foreground text-4xl p-5 mb-10'>Select which provider to get your playlists from</p>
+          <Button variant="outline" className='text-muted-foreground text-xl m-2 p-8' size="lg"  
             onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/login?purpose=get'}>
-              Login to Youtube
+              <img className='w-40 h-auto' src='/YouTube-White-Full-Color-Logo.wine.svg'/>
           </Button>
-          <Button variant="outline" className='text-muted-foreground text-xl m-2' size="lg"  
+          <Button variant="outline" className='text-muted-foreground text-xl m-2 p-8' size="lg"  
             onClick={() => window.location.href = 'http://127.0.0.1:8080/spotify/login?purpose=get'}> 
-              Login to Spotify 
+              <img className="w-40 h-auto" src='/Spotify-Logo.wine.svg'/>
           </Button>
         </div>
         }
@@ -227,7 +240,7 @@ function GetPlaylists() {
           {/* Display all playlists */}
           {allPlaylists.map((playlist: any) => {
             return (
-                <Card key={playlist.id} className='w-120 m-1'>
+                <Card key={playlist.id} className='w-120 m-1 hover:bg-accent has-[[aria-checked=true]]:bg-blue-950'>
                   <CardContent className='flex items-center gap-4'>
                   <img className="size-30 object-cover rounded" src={playlist.image} />
                   {/* passing checked==true because of how shadcn works. 3 states true, false, or interminate. passing true treats the other two states as false so theere can be two outcomes (since the function wants a boolean*/}
@@ -239,7 +252,7 @@ function GetPlaylists() {
                       {playlist.title}
                     </Label>
                   </div>
-                  <Checkbox id={playlist.title} name={playlist.title} className='mt-2 ml-5 size-5'
+                  <Checkbox id={playlist.title} name={playlist.title} className='mt-2 ml-5 size-5 data-[state=checked]:text-white data-[state=checked]:border-blue-800 dark:data-[state=checked]:bg-blue-800'
                     onCheckedChange={(checked) => handlePlaylistCheck(playlist.id, checked == true)} 
                   />
                   </CardContent>
@@ -248,13 +261,10 @@ function GetPlaylists() {
           })}
 
           {/* set playlists to add to localstorage so the data needed persists to the next page*/}
-          <Link to="/transfer-playlists" className='mt-10'>
-            <Button variant="outline" className='text-muted-foreground text-xl' size="lg" 
-            
-              onClick={() => localStorage.setItem("playlists", JSON.stringify(playlistsToAdd))}>
-                Go to transfer page<ArrowRight className="w-4 h-4" />
-            </Button>
-          </Link>
+          <Button variant="outline" className='text-muted-foreground text-xl mt-20' size="lg" 
+            onClick={() => handleToTransferPage()}>
+              Go to transfer page<ArrowRight className="w-4 h-4" />
+          </Button>
         </div>
         }
       </section>
@@ -262,4 +272,4 @@ function GetPlaylists() {
   )
 }
 
-export default GetPlaylists
+export default PickPlaylists

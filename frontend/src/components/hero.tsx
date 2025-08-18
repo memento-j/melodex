@@ -15,7 +15,7 @@ export default function Hero() {
         </p>
 
         <div className="mt-6 flex flex-wrap justify-center gap-4">
-          <Link to="/get-playlists">
+          <Link to="/select-playlists">
               <Button  variant="outline" className='text-muted-foreground text-xl m-5' size="lg">Get Started<ArrowRight className="w-4 h-4" /></Button>
           </Link>
         </div>
