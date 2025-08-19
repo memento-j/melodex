@@ -96,7 +96,7 @@ export default function TransferPlaylists() {
                         
                         {/* Allows user to go back if they want to add/remove playlists*/}
                         <div className="flex justify-center gap-5 mt-20">
-                        <Link to="/get-playlists">
+                        <Link to="/select-playlists">
                             <Button variant="outline" className="text-muted-foreground text-xl mb-10 w-40" size="lg">
                                 <ArrowLeft className="w-4 h-4" />Go back
                             </Button>

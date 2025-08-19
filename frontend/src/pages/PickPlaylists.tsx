@@ -1,6 +1,5 @@
 import { useEffect, useState} from 'react';
 import { parseYTSongInfo } from '../youtubeParse';
-import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label"
@@ -11,13 +10,15 @@ import {
 } from "@/components/ui/card";
 import Navbar from '@/components/Navbar';
 import { useNavigate } from 'react-router-dom';
+import AllPlaylistsSkeleton from '@/components/AllPlaylistsSkeleton';
 
 
-function PickPlaylists() {
+export default function PickPlaylists() {
   const [allPlaylists, setAllPlaylists] = useState<object[]>([]);
   const [playlistsToAddIds, setPlaylistsToAddIds] = useState<string[]>([]);
   const [playlistsToAdd, setPlaylistsToAdd] = useState<object[]>([]);
   const [currentService, setCurrentService] = useState<string>("none");
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
   //gets current service being used on mount
@@ -61,6 +62,7 @@ function PickPlaylists() {
 
   //get current user's youtube playlists
   async function getYoutubePlaylists() {
+    setLoading(true);
     try {
       const response = await fetch(`http://127.0.0.1:8080/youtube/playlists`, {
         credentials: 'include'
@@ -71,6 +73,7 @@ function PickPlaylists() {
       }
       const fetchedPlaylists = await response.json();
       let formatedPlaylist: any[] = [];
+      //using the retrieved user playlist data, created an object for each playlist
       fetchedPlaylists.forEach((playlist: any) => {
         formatedPlaylist.push({
           "title": playlist.snippet.title,
@@ -82,6 +85,7 @@ function PickPlaylists() {
       //along with the name of the service this was retrieved from
       setAllPlaylists(formatedPlaylist);
       setCurrentService("youtube");
+      setLoading(false);
     } catch (err) {
       console.log(`error getting playlists from Youtube API`, err);
     }
@@ -89,6 +93,7 @@ function PickPlaylists() {
 
   //get current user's spotify playlists
   async function getSpotifyPlaylists() {
+    setLoading(true);
     try {
       const response = await fetch(`http://127.0.0.1:8080/spotify/playlists`, {
         credentials: "include"
@@ -121,6 +126,7 @@ function PickPlaylists() {
       //set to stateful var to be displayed
       setAllPlaylists(formatedPlaylists);
       setCurrentService("spotify");
+      setLoading(false)
     } catch (err) {
       console.log(`error getting playlists from Spotify API`, err);
     }
@@ -213,7 +219,7 @@ function PickPlaylists() {
       {/* Show music service login options (make own route)*/}
       <section className="min-h-screen bg-gradient-to-b from-background to-muted p-6 dark">
         {currentService == "none" && 
-        <div className='flex flex-col items-center mt-50'>
+        <div className='flex flex-col items-center mt-70'>
           <p className='text-muted-foreground text-4xl p-5 mb-10'>Select which provider to get your playlists from</p>
           <Button variant="outline" className='text-muted-foreground text-xl m-2 p-8' size="lg"  
             onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/login?purpose=get'}>
@@ -236,6 +242,9 @@ function PickPlaylists() {
             <ArrowLeft className="w-4 h-4"/>Go Back To Music Service Login
           </Button>
           <p className="text-muted-foreground text-4xl p-5 mb-5">Currently signed into {currentService.charAt(0).toUpperCase() + currentService.slice(1)}. Select which playlists to transfer: </p>
+          
+          {/* When fetching playlists, display skeleton*/}
+          {loading && <AllPlaylistsSkeleton/> }
 
           {/* Display all playlists */}
           {allPlaylists.map((playlist: any) => {
@@ -271,5 +280,3 @@ function PickPlaylists() {
     </div>
   )
 }
-
-export default PickPlaylists
