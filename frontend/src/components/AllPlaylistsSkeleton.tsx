@@ -4,7 +4,7 @@ export default function AllPlaylistsSkeleton() {
   return (
     <div>
       {Array.from({ length: 3 }, (_, index) => (
-            <div key={index} className='w-120 my-8'>
+            <div key={index} className='w-140 my-8'>
             <div className='flex items-center'>
               <Skeleton className="size-30 object-cover rounded ml-6"/>
               <div className="flex flex-col flex-grow">

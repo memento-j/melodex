@@ -67,7 +67,7 @@ export default function TransferPlaylists() {
             <section className="min-h-screen bg-gradient-to-b from-background to-muted p-6 dark">
                 { !readyToTransfer &&
                     <div>
-                        <p className="text-muted-foreground text-4xl p-1 my-30 text-center">View your playlists to be transferred </p>
+                        <p className="text-muted-foreground text-4xl p-1 my-30 text-center">View Selected Playlists </p>
                 
                         <div className="flex justify-center">
                             {/* Lists playlists and their songs in an accordian */}
@@ -98,11 +98,11 @@ export default function TransferPlaylists() {
                         {/* Allows user to go back if they want to add/remove playlists*/}
                         <div className="flex justify-center gap-5 mt-20">
                         <Link to="/select-playlists">
-                            <Button variant="outline" className="text-muted-foreground text-xl mb-10 w-40" size="lg">
-                                <ArrowLeft className="w-4 h-4" />Go back
+                            <Button variant="outline" className="text-muted-foreground text-xl mb-10 w-60" size="lg">
+                                <ArrowLeft className="w-4 h-4" />To Playlist Selector
                             </Button>
                         </Link>
-                        <Button variant="outline" className="text-muted-foreground text-xl mb-10 w-40" size="lg" onClick={() => setReadyToTransfer(true)}>
+                        <Button variant="outline" className="text-muted-foreground text-xl mb-10 w-60" size="lg" onClick={() => setReadyToTransfer(true)}>
                                 Continue<ArrowRight className="w-4 h-4" />
                         </Button>
                         </div>

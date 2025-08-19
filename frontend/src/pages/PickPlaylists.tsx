@@ -230,7 +230,7 @@ export default function PickPlaylists() {
             <ServiceSignin message={"Select which provider to get your playlists from"} purpose={"get"}/>
             <Link to="/">
               <Button variant="outline" className="text-muted-foreground text-xl mt-40 w-40" size="lg">
-                  <ArrowLeft className="w-4 h-4" />Go back
+                  <ArrowLeft className="w-4 h-4" />Go Home
               </Button>
             </Link>
           </div>
@@ -240,7 +240,7 @@ export default function PickPlaylists() {
         {currentService != "none" &&
         <div className='flex flex-col items-center mt-40'>
           {/* Let user know which service they are currently signed into*/}
-          <p className="text-muted-foreground text-4xl p-5 mb-5">Currently signed into {currentService.charAt(0).toUpperCase() + currentService.slice(1)}. Select which playlists to transfer: </p>
+          <p className="text-muted-foreground text-4xl p-5 mb-25">Currently signed into {currentService.charAt(0).toUpperCase() + currentService.slice(1)}. Select which playlists to transfer: </p>
           
           {/* When fetching playlists, display skeleton*/}
           {loading && <AllPlaylistsSkeleton/> }
@@ -248,7 +248,7 @@ export default function PickPlaylists() {
           {/* Display all playlists */}
           {allPlaylists.map((playlist: any) => {
             return (
-                <Card key={playlist.id} className='w-120 m-1 hover:bg-accent has-[[aria-checked=true]]:bg-blue-950'>
+                <Card key={playlist.id} className='w-140 m-1 hover:bg-accent has-[[aria-checked=true]]:bg-blue-950'>
                   <CardContent className='flex items-center gap-4'>
                   <img className="size-30 object-cover rounded" src={playlist.image} />
                   {/* passing checked==true because of how shadcn works. 3 states true, false, or interminate. passing true treats the other two states as false so theere can be two outcomes (since the function wants a boolean*/}
@@ -273,7 +273,7 @@ export default function PickPlaylists() {
             <Button variant="outline" className='text-muted-foreground text-xl w-60' size="lg"
               onClick={() => setCurrentService("none")}
             >
-              <ArrowLeft className="w-4 h-4"/>Go Back
+              <ArrowLeft className="w-4 h-4"/>To Service Sign-in
             </Button>
             <Button variant="outline" className='text-muted-foreground text-xl w-60' size="lg" 
               onClick={() => handleToTransferPage()}>
