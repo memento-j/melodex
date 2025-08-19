@@ -9,6 +9,7 @@ import {
     AccordionTrigger,
   } from "@/components/ui/accordion"
 import Navbar from "@/components/Navbar";
+import ServiceSignin from "@/components/ServiceSignin";
 
 export default function TransferPlaylists() {
     //retrieve playlists from local storage
@@ -112,30 +113,11 @@ export default function TransferPlaylists() {
                 {/* Asks user to sign into the service they would like to transfer their playlists to*/}
                 { readyToTransfer &&
                     <div className="flex flex-col justify-center items-center">
-                        <Button variant="outline" className="text-muted-foreground text-xl mb-10 w-40 mt-60" size="lg"
+                        <ServiceSignin message={"Select which provider to get your playlists from"} purpose={"get"}/>
+                        <Button variant="outline" className="text-muted-foreground text-xl w-40 mt-60" size="lg"
                             onClick={() => setReadyToTransfer(false)}
                         >
                             <ArrowLeft className="w-4 h-4" />Go back
-                        </Button>
-
-                        <p className="text-muted-foreground text-3xl p-1 mb-20">Select which provider to transfer your playlists to</p>
-
-                        <Button variant="outline" className='text-muted-foreground text-xl m-2 p-8' size="lg"
-                            onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/login?purpose=transfer'}
-                        > 
-                            <img className='w-40 h-auto' src='/YouTube-White-Full-Color-Logo.wine.svg'/>
-                        </Button>
-
-                        <Button variant="outline" className='text-muted-foreground text-xl m-2 p-8' size="lg" 
-                            onClick={() => window.location.href = 'http://127.0.0.1:8080/spotify/login?purpose=transfer'}
-                        >
-                            <img className="w-40 h-auto" src='/Spotify-Logo.wine.svg'/>
-                        </Button>
-
-                        <Button variant="outline" className='text-muted-foreground text-xl mt-20 w-40' size="lg"
-                            onClick={() => handleTransfer()}
-                        >
-                            Transfer
                         </Button>
                     </div>
                 }

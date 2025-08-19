@@ -11,6 +11,9 @@ import {
 import Navbar from '@/components/Navbar';
 import { useNavigate } from 'react-router-dom';
 import AllPlaylistsSkeleton from '@/components/AllPlaylistsSkeleton';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AlertCircleIcon } from "lucide-react"
+import ServiceSignin from '@/components/ServiceSignin';
 
 
 export default function PickPlaylists() {
@@ -19,6 +22,7 @@ export default function PickPlaylists() {
   const [playlistsToAdd, setPlaylistsToAdd] = useState<object[]>([]);
   const [currentService, setCurrentService] = useState<string>("none");
   const [loading, setLoading] = useState<boolean>(false);
+  const [displayNoPlaylists, setDisplayNoPlaylists] = useState<boolean>(false);
   const navigate = useNavigate();
 
   //gets current service being used on mount
@@ -205,9 +209,10 @@ export default function PickPlaylists() {
   function handleToTransferPage() {
     //if playlist is empty, display toast saying the user cannot continue until they select playlists
     if (playlistsToAdd.length == 0) {
-      console.log("no playlists");
+      setDisplayNoPlaylists(true);
       return;
     }
+    setDisplayNoPlaylists(false);
     //otherwise, set playlists to local storage and navigate to the transfer page
     localStorage.setItem("playlists", JSON.stringify(playlistsToAdd));
     navigate("/transfer-playlists");
@@ -216,31 +221,16 @@ export default function PickPlaylists() {
   return (
     <div>
       <Navbar />
-      {/* Show music service login options (make own route)*/}
+      {/* Show music service login options (make own componenet) Select which provider to get your playlists from*/}
       <section className="min-h-screen bg-gradient-to-b from-background to-muted p-6 dark">
         {currentService == "none" && 
-        <div className='flex flex-col items-center mt-70'>
-          <p className='text-muted-foreground text-4xl p-5 mb-10'>Select which provider to get your playlists from</p>
-          <Button variant="outline" className='text-muted-foreground text-xl m-2 p-8' size="lg"  
-            onClick={() => window.location.href = 'http://127.0.0.1:8080/youtube/login?purpose=get'}>
-              <img className='w-40 h-auto' src='/YouTube-White-Full-Color-Logo.wine.svg'/>
-          </Button>
-          <Button variant="outline" className='text-muted-foreground text-xl m-2 p-8' size="lg"  
-            onClick={() => window.location.href = 'http://127.0.0.1:8080/spotify/login?purpose=get'}> 
-              <img className="w-40 h-auto" src='/Spotify-Logo.wine.svg'/>
-          </Button>
-        </div>
+          <ServiceSignin message={"Select which provider to get your playlists from"} purpose={"get"}/>
         }
 
         {/* Show the playlists retrieved from the current service (move to own component)*/}
         {currentService != "none" &&
         <div className='flex flex-col items-center mt-40'>
           {/* Let user know which service they are currently signed into*/}
-          <Button variant="outline" className='text-muted-foreground text-xl mb-15' size="lg"
-            onClick={() => setCurrentService("none")}
-          >
-            <ArrowLeft className="w-4 h-4"/>Go Back To Music Service Login
-          </Button>
           <p className="text-muted-foreground text-4xl p-5 mb-5">Currently signed into {currentService.charAt(0).toUpperCase() + currentService.slice(1)}. Select which playlists to transfer: </p>
           
           {/* When fetching playlists, display skeleton*/}
@@ -270,10 +260,25 @@ export default function PickPlaylists() {
           })}
 
           {/* set playlists to add to localstorage so the data needed persists to the next page*/}
-          <Button variant="outline" className='text-muted-foreground text-xl mt-20' size="lg" 
-            onClick={() => handleToTransferPage()}>
-              Go to transfer page<ArrowRight className="w-4 h-4" />
-          </Button>
+          <div className='flex gap-5 my-20'>
+            <Button variant="outline" className='text-muted-foreground text-xl w-60' size="lg"
+              onClick={() => setCurrentService("none")}
+            >
+              <ArrowLeft className="w-4 h-4"/>Go Back
+            </Button>
+            <Button variant="outline" className='text-muted-foreground text-xl w-60' size="lg" 
+              onClick={() => handleToTransferPage()}>
+                Continue<ArrowRight className="w-4 h-4" />
+            </Button>
+          </div>
+
+          {/* If no playlists are selected, display an alert*/}
+          { displayNoPlaylists && 
+            <Alert variant="destructive" className='w-auto my-3'>
+              <AlertCircleIcon />
+              <AlertTitle>Must Select At Least 1 Playlist Before Continuing</AlertTitle>
+            </Alert>
+          }
         </div>
         }
       </section>
