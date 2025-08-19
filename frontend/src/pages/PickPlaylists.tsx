@@ -1,19 +1,21 @@
-import { useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+//function for parsing song title and artist name from youtube title and channel name
 import { parseYTSongInfo } from '../youtubeParse';
+//created components
+import Navbar from '@/components/Navbar';
+import ServiceSignin from '@/components/ServiceSignin';
+import AllPlaylistsSkeleton from '@/components/AllPlaylistsSkeleton';
+//shadcn components
 import { Button } from '@/components/ui/button';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label"
-import { ArrowLeft, ArrowRight } from 'lucide-react';
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
-import Navbar from '@/components/Navbar';
-import { useNavigate } from 'react-router-dom';
-import AllPlaylistsSkeleton from '@/components/AllPlaylistsSkeleton';
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Card, CardContent } from "@/components/ui/card";
+import { Alert, AlertTitle } from "@/components/ui/alert"
+//icons
 import { AlertCircleIcon } from "lucide-react"
-import ServiceSignin from '@/components/ServiceSignin';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 
 export default function PickPlaylists() {
@@ -224,7 +226,14 @@ export default function PickPlaylists() {
       {/* Show music service login options (make own componenet) Select which provider to get your playlists from*/}
       <section className="min-h-screen bg-gradient-to-b from-background to-muted p-6 dark">
         {currentService == "none" && 
-          <ServiceSignin message={"Select which provider to get your playlists from"} purpose={"get"}/>
+          <div className='flex flex-col items-center'>
+            <ServiceSignin message={"Select which provider to get your playlists from"} purpose={"get"}/>
+            <Link to="/">
+              <Button variant="outline" className="text-muted-foreground text-xl mt-40 w-40" size="lg">
+                  <ArrowLeft className="w-4 h-4" />Go back
+              </Button>
+            </Link>
+          </div>
         }
 
         {/* Show the playlists retrieved from the current service (move to own component)*/}

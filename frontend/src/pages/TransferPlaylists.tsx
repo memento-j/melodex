@@ -67,7 +67,7 @@ export default function TransferPlaylists() {
             <section className="min-h-screen bg-gradient-to-b from-background to-muted p-6 dark">
                 { !readyToTransfer &&
                     <div>
-                        <p className="text-muted-foreground text-4xl p-1 my-30 text-center">Playlists to be transferred </p>
+                        <p className="text-muted-foreground text-4xl p-1 my-30 text-center">View your playlists to be transferred </p>
                 
                         <div className="flex justify-center">
                             {/* Lists playlists and their songs in an accordian */}
