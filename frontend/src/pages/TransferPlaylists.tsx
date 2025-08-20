@@ -10,6 +10,7 @@ import {
   } from "@/components/ui/accordion"
 import Navbar from "@/components/Navbar";
 import ServiceSignin from "@/components/ServiceSignin";
+import PlaylistsDisplay from "@/components/PlaylistsDisplay";
 
 export default function TransferPlaylists() {
     //retrieve playlists from local storage
@@ -75,32 +76,9 @@ export default function TransferPlaylists() {
                 {currentService == "none" &&  !readyToTransfer &&
                     <div>
                         <p className="text-muted-foreground text-4xl p-1 my-30 text-center">Selected Playlists to Transfer</p>
-                
-                        <div className="flex justify-center">
-                            {/* Lists playlists and their songs in an accordian */}
-                            <Accordion type="multiple" className="w-[40%]">
-                            {playlists.map((playlist: any, index: number) => (
-                                    <AccordionItem value={index.toString()} key={index} className="m-5">
-                                        <AccordionTrigger>
-                                        <div className="flex items-center gap-5">
-                                            <img src={playlist.image} className="size-30 object-cover rounded" />
-                                            <p className="text-muted-foreground text-3xl">{playlist.name}</p>
-                                        </div>
-                                        </AccordionTrigger>
-                                        <AccordionContent>
-                                            {playlist.songs.map((song: any, index: number) => {
-                                                return (
-                                                <div key={index} className="flex gap-5 items-center">
-                                                    <img src={song.image} className="size-30 object-cover rounded my-0.5"/>
-                                                    <p className="text-muted-foreground text-xl">{song.artist + " - " + song.title}</p>
-                                                </div>
-                                                );
-                                            })}
-                                        </AccordionContent>
-                                    </AccordionItem>
-                            ))}
-                            </Accordion>
-                        </div>
+
+                        {/* Display playlists to add. Title, and song info*/}
+                        <PlaylistsDisplay playlists={playlists}/>
                         
                         {/* Allows user to go back if they want to add/remove playlists*/}
                         <div className="flex justify-center gap-5 mt-20">
@@ -130,9 +108,11 @@ export default function TransferPlaylists() {
                 {/* Once signed into the service that the playlists will be transferred to, display button to trasnfer*/}
                 { currentService != "none" && currentService != null && 
                     <div>
-                        <p className="text-muted-foreground text-4xl p-1 mt-60 mb-30 text-center">Click "Transfer" to move your playlists to {currentService.charAt(0).toUpperCase() + currentService.slice(1)} : )</p>
+                        <p className="text-muted-foreground text-4xl p-1 mt-60 mb-15 text-center">Click "Transfer" to move your playlists to {currentService.charAt(0).toUpperCase() + currentService.slice(1)}!</p>
+                        {/* Display playlists to add. Title, and song info*/}
+                        <PlaylistsDisplay playlists={playlists}/>
                         <div className="flex flex-col items-center">
-                            <Button variant="outline" className="text-muted-foreground text-xl w-40 mt-10" size="lg"
+                            <Button variant="outline" className="text-muted-foreground w-60 h-15 text-3xl mt-30" size="lg"
                                 onClick={() => handleTransfer()}
                             >
                                 Transfer
