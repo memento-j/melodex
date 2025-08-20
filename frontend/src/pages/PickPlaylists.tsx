@@ -17,12 +17,11 @@ import { Alert, AlertTitle } from "@/components/ui/alert"
 import { AlertCircleIcon } from "lucide-react"
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
-
 export default function PickPlaylists() {
   const [allPlaylists, setAllPlaylists] = useState<object[]>([]);
   const [playlistsToAddIds, setPlaylistsToAddIds] = useState<string[]>([]);
   const [playlistsToAdd, setPlaylistsToAdd] = useState<object[]>([]);
-  const [currentService, setCurrentService] = useState<string>("none");
+  const [currentService, setCurrentService] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [displayNoPlaylists, setDisplayNoPlaylists] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -58,8 +57,15 @@ export default function PickPlaylists() {
       const response = await fetch("http://127.0.0.1:8080/current-service", {
         credentials: 'include'
       });
+      if (!response.ok) {
+        setCurrentService("none");
+      }
       const currentService = await response.json();
-      setCurrentService(currentService.service);
+      if (currentService.purpose == "get") {
+        setCurrentService(currentService.service);
+        return;
+      } 
+      setCurrentService("none");
     } catch (err) {
       console.log(err);
 
@@ -109,7 +115,6 @@ export default function PickPlaylists() {
         return;
       }
       const fetchedPlaylists = await response.json();
-
       //create new obj to store necessary playlist info
       let formatedPlaylists: any[] = [];
       fetchedPlaylists.forEach((playlist: any) => {
@@ -149,7 +154,6 @@ export default function PickPlaylists() {
         const fetchedSongs = await response.json();
         //used to store information about every song in the current playlist
         let songInfo: any[] = [];
-
         //based on the service being used, the api data is parsed differently
         //differenciate this using a switch statement
         switch (currentService) {
@@ -178,7 +182,6 @@ export default function PickPlaylists() {
             console.log("no valid service");
             break;
         }
-
         //searches for current playlist from all playlists to store the name and image of it
         const currentPlaylist: any = allPlaylists.find((playlist: any) => playlist.id == playlistId);
         if (currentPlaylist) {
@@ -236,7 +239,7 @@ export default function PickPlaylists() {
           </div>
         }
         {/* Show the playlists retrieved from the current service (move to own component)*/}
-        {currentService != "none" &&
+        {currentService != "none" && currentService != null &&
         <div className='flex flex-col items-center mt-40'>
           {/* Let user know which service they are currently signed into*/}
           <p className="text-muted-foreground text-4xl p-5 mb-25">Currently signed into {currentService.charAt(0).toUpperCase() + currentService.slice(1)}. Select which playlists to transfer: </p>

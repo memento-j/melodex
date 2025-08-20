@@ -15,7 +15,7 @@ export default function TransferPlaylists() {
     //retrieve playlists from local storage
     const stored = localStorage.getItem("playlists");
     const playlists = stored ? JSON.parse(stored) : [];
-    const [currentService, setCurrentService] = useState<string>("none");
+    const [currentService, setCurrentService] = useState<string | null>(null);
     const [readyToTransfer, setReadyToTransfer] = useState<boolean>(false);
     const [transferSuccess, setTransferSuccess] = useState<boolean>();
     const [loading, setLoading] = useState<boolean>(false);
@@ -32,12 +32,14 @@ export default function TransferPlaylists() {
                 credentials: 'include'
             });
             if (!response.ok) {
-                console.log("no service signed into");
+                setCurrentService("none");
             }
             const currentService = await response.json();
             if (currentService.purpose == "transfer") {
                 setCurrentService(currentService.service);
+                return
             }
+            setCurrentService("none");
         } catch (err) {
             console.log(err);
         }
@@ -65,10 +67,10 @@ export default function TransferPlaylists() {
         }
         setLoading(false);
     }
-    
+
     return (
         <div>
-            <Navbar />
+            <Navbar />       
             <section className="min-h-screen bg-gradient-to-b from-background to-muted p-6 dark">
                 {currentService == "none" &&  !readyToTransfer &&
                     <div>
@@ -125,8 +127,8 @@ export default function TransferPlaylists() {
                         </Button>
                     </div>
                 }
-                {/* Display once signed into the service that the playlists will be transferred to*/}
-                { currentService != "none" && 
+                {/* Once signed into the service that the playlists will be transferred to, display button to trasnfer*/}
+                { currentService != "none" && currentService != null && 
                     <div>
                         <p className="text-muted-foreground text-4xl p-1 mt-60 mb-30 text-center">Click "Transfer" to move your playlists to {currentService.charAt(0).toUpperCase() + currentService.slice(1)} : )</p>
                         <div className="flex flex-col items-center">
@@ -135,6 +137,9 @@ export default function TransferPlaylists() {
                             >
                                 Transfer
                             </Button>
+                            { transferSuccess &&
+                                <p className="text-muted-foreground text-4xl p-1 mt-60 mb-30 text-center"> Successfully Transferred Playlists to {currentService.charAt(0).toUpperCase() + currentService.slice(1)}!</p>
+                            }
                             <Button variant="outline" className="text-muted-foreground text-xl w-40 mt-20" size="lg"
                                 onClick={() => setCurrentService("none")}
                             >
