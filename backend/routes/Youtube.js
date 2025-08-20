@@ -249,9 +249,9 @@ router.post("/playlists", async (req, res) => {
         console.log("error adding song" , videoId, err);
       }
     }
-    console.log("added", playlist.name);
   } 
-  return res.status(201);
+  //return with successfly created status code response and message
+  return res.status(201).json({message: "playlists added"});
 });
 
 module.exports = router;
