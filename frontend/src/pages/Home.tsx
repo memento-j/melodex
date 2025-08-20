@@ -7,13 +7,13 @@ import { ArrowRight } from "lucide-react";
 export default function Home() {
     return(
         <div className="relative min-h-screen w-full overflow-hidden">
-            <div className="absolute inset-0 bg-black z-0" />
+            <div className="absolute inset-0 bg-gradient-to-b from-background to-muted z-0 dark" />
             <div className="absolute inset-0 z-0">
                 <Aurora
-                    colorStops={["#000000", "#667eea","#9f7aea"]}
-                    blend={0.5}
+                    colorStops={["#667eea","#9f7aea", "#667eea"]}
+                    blend={0.3}
                     amplitude={0.5}
-                    speed={1.0}
+                    speed={0.8}
                 />
             </div>
             <div className="relative z-10 flex flex-col items-center min-h-screen">
