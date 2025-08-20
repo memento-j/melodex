@@ -35,7 +35,7 @@ app.get("/current-service", (req,res) => {
   if (!req.session.currentService) {
     return res.json({service: "none"})
   }
-  return res.json({service: req.session.currentService})
+  return res.json({service: req.session.currentService, purpose: req.session.purpose})
 })
 
 app.listen(8080, '127.0.0.1', () => {

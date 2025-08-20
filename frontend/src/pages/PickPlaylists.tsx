@@ -91,10 +91,10 @@ export default function PickPlaylists() {
       //along with the name of the service this was retrieved from
       setAllPlaylists(formatedPlaylist);
       setCurrentService("youtube");
-      setLoading(false);
     } catch (err) {
       console.log(`error getting playlists from Youtube API`, err);
     }
+    setLoading(false);
   }
 
   //get current user's spotify playlists
@@ -132,10 +132,10 @@ export default function PickPlaylists() {
       //set to stateful var to be displayed
       setAllPlaylists(formatedPlaylists);
       setCurrentService("spotify");
-      setLoading(false)
     } catch (err) {
       console.log(`error getting playlists from Spotify API`, err);
     }
+    setLoading(false)
   }
 
   //get all playlist song info only for the playlists the user wants to add
@@ -235,7 +235,6 @@ export default function PickPlaylists() {
             </Link>
           </div>
         }
-
         {/* Show the playlists retrieved from the current service (move to own component)*/}
         {currentService != "none" &&
         <div className='flex flex-col items-center mt-40'>
@@ -267,9 +266,15 @@ export default function PickPlaylists() {
                 </Card>
             );
           })}
-
+            {/* If no playlists are selected, display an alert*/}
+            { displayNoPlaylists && 
+              <Alert variant="destructive" className='w-auto my-5'>
+                <AlertCircleIcon />
+                <AlertTitle>Must Select At Least 1 Playlist Before Continuing</AlertTitle>
+              </Alert>
+            }
           {/* set playlists to add to localstorage so the data needed persists to the next page*/}
-          <div className='flex gap-5 my-20'>
+          <div className='flex gap-5 mt-12 mb-20'>
             <Button variant="outline" className='text-muted-foreground text-xl w-60' size="lg"
               onClick={() => setCurrentService("none")}
             >
@@ -280,14 +285,6 @@ export default function PickPlaylists() {
                 Continue<ArrowRight className="w-4 h-4" />
             </Button>
           </div>
-
-          {/* If no playlists are selected, display an alert*/}
-          { displayNoPlaylists && 
-            <Alert variant="destructive" className='w-auto my-3'>
-              <AlertCircleIcon />
-              <AlertTitle>Must Select At Least 1 Playlist Before Continuing</AlertTitle>
-            </Alert>
-          }
         </div>
         }
       </section>
