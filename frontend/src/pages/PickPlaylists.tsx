@@ -232,7 +232,7 @@ export default function PickPlaylists() {
           <div className='flex flex-col items-center'>
             <ServiceSignin message={"Select which provider to get your playlists from"} purpose={"get"}/>
             <Link to="/">
-              <Button variant="outline" className="text-muted-foreground text-xl mt-40 w-40" size="lg">
+              <Button variant="outline" className="text-white text-xl mt-40 w-40" size="lg">
                   <ArrowLeft className="w-4 h-4" />Go Home
               </Button>
             </Link>
@@ -242,7 +242,7 @@ export default function PickPlaylists() {
         {currentService != "none" && currentService != null &&
         <div className='flex flex-col items-center mt-40'>
           {/* Let user know which service they are currently signed into*/}
-          <p className="text-muted-foreground text-4xl p-5 mb-25">Currently signed into {currentService.charAt(0).toUpperCase() + currentService.slice(1)}. Select which playlists to transfer: </p>
+          <p className="text-white text-4xl p-5 mb-25">Currently signed into {currentService.charAt(0).toUpperCase() + currentService.slice(1)}. Select which playlists to transfer: </p>
           
           {/* When fetching playlists, display skeleton*/}
           {loading && <AllPlaylistsSkeleton/> }
@@ -256,7 +256,7 @@ export default function PickPlaylists() {
                   {/* passing checked==true because of how shadcn works. 3 states true, false, or interminate. passing true treats the other two states as false so theere can be two outcomes (since the function wants a boolean*/}
                   <div className="flex flex-col flex-grow">
                     <Label
-                      className="text-muted-foreground text-2xl"
+                      className="text-white text-2xl"
                       htmlFor={playlist.title}
                     >
                       {playlist.title}
@@ -278,12 +278,12 @@ export default function PickPlaylists() {
             }
           {/* set playlists to add to localstorage so the data needed persists to the next page*/}
           <div className='flex gap-5 mt-12 mb-20'>
-            <Button variant="outline" className='text-muted-foreground text-xl w-60' size="lg"
+            <Button variant="outline" className='text-white text-xl w-60' size="lg"
               onClick={() => setCurrentService("none")}
             >
               <ArrowLeft className="w-4 h-4"/>To Service Sign-in
             </Button>
-            <Button variant="outline" className='text-muted-foreground text-xl w-60' size="lg" 
+            <Button variant="outline" className='text-white text-xl w-60' size="lg" 
               onClick={() => handleToTransferPage()}>
                 Continue<ArrowRight className="w-4 h-4" />
             </Button>

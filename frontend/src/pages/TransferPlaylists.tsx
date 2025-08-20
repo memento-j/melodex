@@ -2,15 +2,10 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-  } from "@/components/ui/accordion"
 import Navbar from "@/components/Navbar";
 import ServiceSignin from "@/components/ServiceSignin";
 import PlaylistsDisplay from "@/components/PlaylistsDisplay";
+import { Loader2 } from "lucide-react";
 
 export default function TransferPlaylists() {
     //retrieve playlists from local storage
@@ -18,7 +13,7 @@ export default function TransferPlaylists() {
     const playlists = stored ? JSON.parse(stored) : [];
     const [currentService, setCurrentService] = useState<string | null>(null);
     const [readyToTransfer, setReadyToTransfer] = useState<boolean>(false);
-    const [transferSuccess, setTransferSuccess] = useState<boolean>();
+    const [transferSuccess, setTransferSuccess] = useState<boolean | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
     //gets current service signed into on mount
@@ -75,7 +70,7 @@ export default function TransferPlaylists() {
             <section className="min-h-screen bg-gradient-to-b from-background to-muted p-6 dark">
                 {currentService == "none" &&  !readyToTransfer &&
                     <div>
-                        <p className="text-muted-foreground text-4xl p-1 my-30 text-center">Selected Playlists to Transfer</p>
+                        <p className="text-white text-4xl p-1 my-30 text-center">Selected Playlists to Transfer</p>
 
                         {/* Display playlists to add. Title, and song info*/}
                         <PlaylistsDisplay playlists={playlists}/>
@@ -83,11 +78,11 @@ export default function TransferPlaylists() {
                         {/* Allows user to go back if they want to add/remove playlists*/}
                         <div className="flex justify-center gap-5 mt-20">
                         <Link to="/select-playlists">
-                            <Button variant="outline" className="text-muted-foreground text-xl mb-10 w-60" size="lg">
+                            <Button variant="outline" className="text-white text-xl mb-10 w-65" size="lg">
                                 <ArrowLeft className="w-4 h-4" />To Playlist Selector
                             </Button>
                         </Link>
-                        <Button variant="outline" className="text-muted-foreground text-xl mb-10 w-60" size="lg" onClick={() => setReadyToTransfer(true)}>
+                        <Button variant="outline" className="text-white text-xl mb-10 w-65" size="lg" onClick={() => setReadyToTransfer(true)}>
                                 Continue<ArrowRight className="w-4 h-4" />
                         </Button>
                         </div>
@@ -98,7 +93,7 @@ export default function TransferPlaylists() {
                 { readyToTransfer && currentService == "none" &&
                     <div className="flex flex-col justify-center items-center">
                         <ServiceSignin message={"Select which provider to transfer your playlists to"} purpose={"transfer"}/>
-                        <Button variant="outline" className="text-muted-foreground text-xl w-40 mt-60" size="lg"
+                        <Button variant="outline" className="text-white text-xl w-40 mt-60" size="lg"
                             onClick={() => setReadyToTransfer(false)}
                         >
                             <ArrowLeft className="w-4 h-4" />Go back
@@ -106,26 +101,38 @@ export default function TransferPlaylists() {
                     </div>
                 }
                 {/* Once signed into the service that the playlists will be transferred to, display button to trasnfer*/}
-                { currentService != "none" && currentService != null && 
+                { currentService != "none" && currentService != null && !transferSuccess && 
                     <div>
-                        <p className="text-muted-foreground text-4xl p-1 mt-60 mb-15 text-center">Click "Transfer" to move your playlists to {currentService.charAt(0).toUpperCase() + currentService.slice(1)}!</p>
+                        <p className="text-white text-4xl p-1 mt-60 mb-15 text-center">Click "Transfer" to move your playlists to {currentService.charAt(0).toUpperCase() + currentService.slice(1)}!</p>
                         {/* Display playlists to add. Title, and song info*/}
                         <PlaylistsDisplay playlists={playlists}/>
                         <div className="flex flex-col items-center">
-                            <Button variant="outline" className="text-muted-foreground w-60 h-15 text-3xl mt-30" size="lg"
-                                onClick={() => handleTransfer()}
+                            <Button variant="outline" className="text-white w-60 h-15 text-3xl mt-30" size="lg"
+                                onClick={() => handleTransfer()} disabled={loading}
                             >
-                                Transfer
+                                {loading ? (
+                                    <>
+                                    <Loader2 className="animate-spin h-5 w-5" />
+                                        Transferring...
+                                    </>
+                                ) : (
+                                    "Transfer"
+                                )}
                             </Button>
-                            { transferSuccess &&
-                                <p className="text-muted-foreground text-4xl p-1 mt-60 mb-30 text-center"> Successfully Transferred Playlists to {currentService.charAt(0).toUpperCase() + currentService.slice(1)}!</p>
-                            }
-                            <Button variant="outline" className="text-muted-foreground text-xl w-40 mt-20" size="lg"
-                                onClick={() => setCurrentService("none")}
+                            <Button variant="outline" className="text-white text-xl w-40 mt-20" size="lg"
+                            onClick={() => setCurrentService("none")}
                             >
                                 <ArrowLeft className="w-4 h-4" />Go back
                             </Button>
                         </div>                        
+                    </div>
+                }
+                { transferSuccess && currentService != null &&
+                    <div className="flex flex-col items-center mt-80">
+                        <p className="text-white text-4xl p-1 mt-30 mb-30 text-center"> Successfully Transferred Playlists to {currentService.charAt(0).toUpperCase() + currentService.slice(1)}!</p>
+                        <Link to="/select-playlists">
+                            <Button  variant="outline" className='text-white text-xl m-5 dark' size="lg">Start New Transfer<ArrowRight className="w-4 h-4" /></Button>
+                        </Link>
                     </div>
                 }
             </section>
