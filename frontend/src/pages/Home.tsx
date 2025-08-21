@@ -1,5 +1,5 @@
 import Navbar from "@/components/Navbar";
-import Aurora from "@/components/Aurora";
+import DarkVeil from "@/components/DarkVeil";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -7,13 +7,9 @@ import { ArrowRight } from "lucide-react";
 export default function Home() {
     return(
         <div className="relative min-h-screen w-full overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-b from-background to-muted z-0 dark" />
             <div className="absolute inset-0 z-0">
-                <Aurora
-                    colorStops={["#667eea","#9f7aea", "#667eea"]}
-                    blend={0.3}
-                    amplitude={0.5}
-                    speed={0.8}
+                <DarkVeil 
+                    warpAmount={1.0}
                 />
             </div>
             <div className="relative z-10 flex flex-col items-center min-h-screen">
