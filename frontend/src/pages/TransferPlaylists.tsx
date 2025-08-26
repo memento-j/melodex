@@ -67,7 +67,7 @@ export default function TransferPlaylists() {
     return (
         <div>
             <Navbar />       
-            <section className="min-h-screen bg-gradient-to-b from-background to-muted p-6 dark">
+            <section className="min-h-screen bg-slate-900 p-6 dark">
                 {currentService == "none" &&  !readyToTransfer &&
                     <div>
                         <p className="text-white text-4xl p-1 my-30 text-center">Selected Playlists to Transfer</p>
@@ -78,11 +78,11 @@ export default function TransferPlaylists() {
                         {/* Allows user to go back if they want to add/remove playlists*/}
                         <div className="flex justify-center gap-5 mt-20">
                         <Link to="/select-playlists">
-                            <Button variant="outline" className="text-white text-xl mb-10 w-65" size="lg">
+                            <Button variant="default" className="bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl mb-10 w-65" size="lg">
                                 <ArrowLeft className="w-4 h-4" />To Playlist Selector
                             </Button>
                         </Link>
-                        <Button variant="outline" className="text-white text-xl mb-10 w-65" size="lg" onClick={() => setReadyToTransfer(true)}>
+                        <Button variant="default" className="bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl mb-10 w-65" size="lg" onClick={() => setReadyToTransfer(true)}>
                                 Continue<ArrowRight className="w-4 h-4" />
                         </Button>
                         </div>
@@ -93,7 +93,7 @@ export default function TransferPlaylists() {
                 { readyToTransfer && currentService == "none" &&
                     <div className="flex flex-col justify-center items-center">
                         <ServiceSignin message={"Select which provider to transfer your playlists to"} purpose={"transfer"}/>
-                        <Button variant="outline" className="text-white text-xl w-40 mt-60" size="lg"
+                        <Button variant="default" className="bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl w-40 mt-60" size="lg"
                             onClick={() => setReadyToTransfer(false)}
                         >
                             <ArrowLeft className="w-4 h-4" />Go back
@@ -107,7 +107,7 @@ export default function TransferPlaylists() {
                         {/* Display playlists to add. Title, and song info*/}
                         <PlaylistsDisplay playlists={playlists}/>
                         <div className="flex flex-col items-center">
-                            <Button variant="outline" className="text-white w-60 h-15 text-3xl mt-30" size="lg"
+                            <Button variant="default" className="bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white w-60 h-15 text-3xl mt-30" size="lg"
                                 onClick={() => handleTransfer()} disabled={loading}
                             >
                                 {loading ? (
@@ -119,7 +119,7 @@ export default function TransferPlaylists() {
                                     "Transfer"
                                 )}
                             </Button>
-                            <Button variant="outline" className="text-white text-xl w-40 mt-20" size="lg"
+                            <Button variant="default" className="bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl w-40 mt-20" size="lg"
                             onClick={() => setCurrentService("none")}
                             >
                                 <ArrowLeft className="w-4 h-4" />Go back

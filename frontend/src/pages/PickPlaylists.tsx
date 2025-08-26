@@ -12,7 +12,8 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card";
-import { Alert, AlertTitle } from "@/components/ui/alert"
+import { Alert, AlertTitle } from "@/components/ui/alert";
+import AnimatedContent from '@/components/AnimatedContent';
 //icons
 import { AlertCircleIcon } from "lucide-react"
 import { ArrowLeft, ArrowRight } from 'lucide-react';
@@ -225,18 +226,26 @@ export default function PickPlaylists() {
 
   return (
     <div>
-      <Navbar />
+      <Navbar/>
       {/* Show music service login options (make own componenet) Select which provider to get your playlists from*/}
-      <section className="min-h-screen bg-gradient-to-b from-background to-muted p-6 dark">
+      <section className="min-h-screen p-6 bg-slate-900 dark">
         {currentService == "none" && 
-          <div className='flex flex-col items-center'>
-            <ServiceSignin message={"Select which provider to get your playlists from"} purpose={"get"}/>
-            <Link to="/">
-              <Button variant="outline" className="text-white text-xl mt-40 w-40" size="lg">
-                  <ArrowLeft className="w-4 h-4" />Go Home
-              </Button>
-            </Link>
-          </div>
+              <AnimatedContent
+                distance={100}
+                direction="vertical"
+                duration={0.7}
+                scale={1.0}
+                threshold={0.1}
+              >
+                <div className='flex flex-col items-center'>
+                <ServiceSignin message={"Select which provider to get your playlists from"} purpose={"get"}/>
+                <Link to="/">
+                  <Button variant="default" className="bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl mt-40 w-40 " size="lg">
+                      <ArrowLeft className="w-4 h-4" />Go Home
+                  </Button>
+                </Link>
+                </div>
+              </AnimatedContent>
         }
         {/* Show the playlists retrieved from the current service (move to own component)*/}
         {currentService != "none" && currentService != null &&
@@ -250,7 +259,7 @@ export default function PickPlaylists() {
           {/* Display all playlists */}
           {allPlaylists.map((playlist: any) => {
             return (
-                <Card key={playlist.id} className='w-140 m-1 hover:bg-accent has-[[aria-checked=true]]:bg-blue-950'>
+                <Card key={playlist.id} className='w-160 m-2 bg-[#172135] hover:bg-accent has-[[aria-checked=true]]:bg-slate-600'>
                   <CardContent className='flex items-center gap-4'>
                   <img className="size-30 object-cover rounded" src={playlist.image} />
                   {/* passing checked==true because of how shadcn works. 3 states true, false, or interminate. passing true treats the other two states as false so theere can be two outcomes (since the function wants a boolean*/}
@@ -262,29 +271,30 @@ export default function PickPlaylists() {
                       {playlist.title}
                     </Label>
                   </div>
-                  <Checkbox id={playlist.title} name={playlist.title} className='mt-2 ml-5 size-5 data-[state=checked]:text-white data-[state=checked]:border-blue-800 dark:data-[state=checked]:bg-blue-800'
+                  <Checkbox id={playlist.title} name={playlist.title} className='mt-2 ml-5 size-5 data-[state=checked]:text-white data-[state=checked]:border-slate-900 dark:data-[state=checked]:bg-slate-900'
                     onCheckedChange={(checked) => handlePlaylistCheck(playlist.id, checked == true)} 
                   />
                   </CardContent>
                 </Card>
             );
           })}
-            {/* If no playlists are selected, display an alert*/}
-            { displayNoPlaylists && 
-              <Alert variant="destructive" className='w-auto my-5'>
-                <AlertCircleIcon />
-                <AlertTitle>Must Select At Least 1 Playlist Before Continuing</AlertTitle>
-              </Alert>
-            }
+          {/* If no playlists are selected, display an alert*/}
+          { displayNoPlaylists && 
+            <Alert variant="destructive" className='w-auto my-5'>
+              <AlertCircleIcon />
+              <AlertTitle>Must Select At Least 1 Playlist Before Continuing</AlertTitle>
+            </Alert>
+          }
           {/* set playlists to add to localstorage so the data needed persists to the next page*/}
           <div className='flex gap-5 mt-12 mb-20'>
-            <Button variant="outline" className='text-white text-xl w-60' size="lg"
+            <Button variant="default" className='bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl w-60' size="lg"
               onClick={() => setCurrentService("none")}
             >
               <ArrowLeft className="w-4 h-4"/>To Service Sign-in
             </Button>
-            <Button variant="outline" className='text-white text-xl w-60' size="lg" 
-              onClick={() => handleToTransferPage()}>
+            <Button variant="default" className='bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl w-60' size="lg" 
+              onClick={() => handleToTransferPage()}
+              >
                 Continue<ArrowRight className="w-4 h-4" />
             </Button>
           </div>

@@ -8,9 +8,9 @@ import {
 
 export default function Navbar() {
     return(
-        <NavigationMenu className="fixed top-0 left-0 w-full max-w-none bg-transparent shadow-none m-0">
-            <div className="mx-auto max-w-screen w-full px-16 py-8">
-                <NavigationMenuList className="flex w-full items-center !justify-between">
+        <NavigationMenu className="fixed top-0 left-0 w-full max-w-none bg-transparent shadow-none m-0 z-50">
+            <div className="mx-auto max-w-screen w-full px-40 py-8">
+                <NavigationMenuList className="flex w-full items-center justify-between">
                     {/* Site name */}
                     <NavigationMenuItem>
                         <Link to="/" >

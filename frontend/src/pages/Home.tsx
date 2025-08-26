@@ -1,17 +1,11 @@
 import Navbar from "@/components/Navbar";
-import DarkVeil from "@/components/DarkVeil";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
 export default function Home() {
     return(
-        <div className="relative min-h-screen w-full overflow-hidden">
-            <div className="absolute inset-0 z-0">
-                <DarkVeil 
-                    warpAmount={1.0}
-                />
-            </div>
+<div className="min-h-screen bg-[linear-gradient(to_bottom,#0a0b17,#0f172a,#1e293b,#334155,#475569)]">
             <div className="relative z-10 flex flex-col items-center min-h-screen">
                 <Navbar />
                 <div className="mt-100">
@@ -24,7 +18,7 @@ export default function Home() {
 
                     <div className="mt-6 flex flex-wrap justify-center gap-4">
                         <Link to="/select-playlists">
-                            <Button  variant="outline" className='text-white text-xl m-5 dark' size="lg">Get Started<ArrowRight className="w-4 h-4" /></Button>
+                            <Button  variant="default" className='bg-slate-900 border border-slate-500 hover:bg-slate-600 text-white text-xl m-5 dark' size="lg">Get Started<ArrowRight className="w-4 h-4" /></Button>
                         </Link>
                     </div>
                 </div>
