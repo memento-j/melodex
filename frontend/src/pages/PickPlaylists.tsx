@@ -226,9 +226,9 @@ export default function PickPlaylists() {
 
   return (
     <div>
-      <Navbar/>
       {/* Show music service login options (make own componenet) Select which provider to get your playlists from*/}
-      <section className="min-h-screen p-6 bg-slate-900 dark">
+      <section className="min-h-screen bg-slate-900 dark">
+        <Navbar/>
         {currentService == "none" && 
               <AnimatedContent
                 distance={100}
@@ -238,12 +238,12 @@ export default function PickPlaylists() {
                 threshold={0.1}
               >
                 <div className='flex flex-col items-center'>
-                <ServiceSignin message={"Select which provider to get your playlists from"} purpose={"get"}/>
-                <Link to="/">
-                  <Button variant="default" className="bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl mt-40 w-40 " size="lg">
-                      <ArrowLeft className="w-4 h-4" />Go Home
-                  </Button>
-                </Link>
+                  <ServiceSignin message={"Select which provider to get your playlists from"} purpose={"get"}/>
+                  <Link to="/">
+                    <Button variant="default" className="bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl mt-40 w-40 " size="lg">
+                        <ArrowLeft className="w-4 h-4" />Go Home
+                    </Button>
+                  </Link>
                 </div>
               </AnimatedContent>
         }

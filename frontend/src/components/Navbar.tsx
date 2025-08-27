@@ -8,8 +8,8 @@ import {
 
 export default function Navbar() {
     return(
-        <NavigationMenu className="fixed top-0 left-0 w-full max-w-none bg-transparent shadow-none m-0 z-50">
-            <div className="w-full p-10 sm:p-15">
+        <NavigationMenu className="w-full max-w-none bg-transparent z-50 px-15 py-10">
+            <div className="w-full">
                 <NavigationMenuList className="justify-between">
                     {/* Site name */}
                     <NavigationMenuItem>

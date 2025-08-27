@@ -65,9 +65,9 @@ export default function TransferPlaylists() {
     }
 
     return (
-        <div>
-            <Navbar />       
-            <section className="min-h-screen bg-slate-900 p-6 dark">
+        <div>    
+            <section className="min-h-screen bg-slate-900 dark">
+                <Navbar />   
                 {currentService == "none" &&  !readyToTransfer &&
                     <div>
                         <p className="text-white text-4xl p-1 mt-40 mb-20 text-center">Selected Playlists to Transfer</p>
