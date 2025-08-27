@@ -112,16 +112,6 @@ router.get("/playlist", async (req, res) => {
   }
 });
 
-//helper function to search for songs
-async function searchSong(name, artist) {
-  try {
-
-    
-  } catch (err) {
-    console.log(err," error searching for ", artist, " - " ,name);
-  }
-}
-
 //create spotify playlists
 router.post("/playlists", async (req, res) => {
   //check if the user logged in to their service with the intent to transfer
