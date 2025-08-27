@@ -227,7 +227,7 @@ export default function PickPlaylists() {
   return (
     <div>
       {/* Show music service login options (make own componenet) Select which provider to get your playlists from*/}
-      <section className="min-h-screen bg-slate-900 dark">
+      <section className="min-h-screen bg-slate-950 dark">
         <Navbar/>
         {currentService == "none" && 
               <AnimatedContent
@@ -238,7 +238,7 @@ export default function PickPlaylists() {
                 threshold={0.1}
               >
                 <div className='flex flex-col items-center'>
-                  <ServiceSignin message={"Select which provider to get your playlists from"} purpose={"get"}/>
+                  <ServiceSignin message={"Sign in to the music service you would like to get your playlists from"} purpose={"get"}/>
                   <Link to="/">
                     <Button variant="default" className="bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl mt-40 w-40 " size="lg">
                         <ArrowLeft className="w-4 h-4" />Go Home
@@ -249,7 +249,7 @@ export default function PickPlaylists() {
         }
         {/* Show the playlists retrieved from the current service (move to own component)*/}
         {currentService != "none" && currentService != null &&
-        <div className='flex flex-col items-center mt-40'>
+        <div className='flex flex-col items-center mt-15'>
           {/* Let user know which service they are currently signed into*/}
           <p className="text-white w-120 sm:w-150 md:200 text-center text-4xl p-5 mb-10">Currently signed into {currentService.charAt(0).toUpperCase() + currentService.slice(1)}. Select which playlists to transfer: </p>
           
