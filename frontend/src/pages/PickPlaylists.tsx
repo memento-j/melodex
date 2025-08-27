@@ -251,15 +251,14 @@ export default function PickPlaylists() {
         {currentService != "none" && currentService != null &&
         <div className='flex flex-col items-center mt-40'>
           {/* Let user know which service they are currently signed into*/}
-          <p className="text-white text-4xl p-5 mb-25">Currently signed into {currentService.charAt(0).toUpperCase() + currentService.slice(1)}. Select which playlists to transfer: </p>
+          <p className="text-white w-120 sm:w-150 md:200 text-center text-4xl p-5 mb-10">Currently signed into {currentService.charAt(0).toUpperCase() + currentService.slice(1)}. Select which playlists to transfer: </p>
           
           {/* When fetching playlists, display skeleton*/}
           {loading && <AllPlaylistsSkeleton/> }
-
           {/* Display all playlists */}
           {allPlaylists.map((playlist: any) => {
             return (
-                <Card key={playlist.id} className='w-160 m-2 bg-[#172135] hover:bg-accent has-[[aria-checked=true]]:bg-slate-600'>
+                <Card key={playlist.id} className='w-100 sm:w-130 md:w-160 m-2 bg-[#172135] hover:bg-accent has-[[aria-checked=true]]:bg-slate-600'>
                   <CardContent className='flex items-center gap-4'>
                   <img className="size-30 object-cover rounded" src={playlist.image} />
                   {/* passing checked==true because of how shadcn works. 3 states true, false, or interminate. passing true treats the other two states as false so theere can be two outcomes (since the function wants a boolean*/}
@@ -286,13 +285,13 @@ export default function PickPlaylists() {
             </Alert>
           }
           {/* set playlists to add to localstorage so the data needed persists to the next page*/}
-          <div className='flex gap-5 mt-12 mb-20'>
-            <Button variant="default" className='bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl w-60' size="lg"
+          <div className='flex gap-5 mt-25 mb-20'>
+            <Button variant="default" className='bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl w-48 sm:w-60' size="lg"
               onClick={() => setCurrentService("none")}
             >
-              <ArrowLeft className="w-4 h-4"/>To Service Sign-in
+              <ArrowLeft className="w-4 h-4"/>Service Sign-in
             </Button>
-            <Button variant="default" className='bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl w-60' size="lg" 
+            <Button variant="default" className='bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl w-48 sm:w-60' size="lg" 
               onClick={() => handleToTransferPage()}
               >
                 Continue<ArrowRight className="w-4 h-4" />

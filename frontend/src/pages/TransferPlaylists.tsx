@@ -70,7 +70,7 @@ export default function TransferPlaylists() {
             <section className="min-h-screen bg-slate-900 p-6 dark">
                 {currentService == "none" &&  !readyToTransfer &&
                     <div>
-                        <p className="text-white text-4xl p-1 my-30 text-center">Selected Playlists to Transfer</p>
+                        <p className="text-white text-4xl p-1 mt-40 mb-20 text-center">Selected Playlists to Transfer</p>
 
                         {/* Display playlists to add. Title, and song info*/}
                         <PlaylistsDisplay playlists={playlists}/>
@@ -78,11 +78,11 @@ export default function TransferPlaylists() {
                         {/* Allows user to go back if they want to add/remove playlists*/}
                         <div className="flex justify-center gap-5 mt-20">
                         <Link to="/select-playlists">
-                            <Button variant="default" className="bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl mb-10 w-65" size="lg">
-                                <ArrowLeft className="w-4 h-4" />To Playlist Selector
+                            <Button variant="default" className="bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl mb-10 w-45 sm:w-65" size="lg">
+                                <ArrowLeft className="w-4 h-4" />Select Playlists
                             </Button>
                         </Link>
-                        <Button variant="default" className="bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl mb-10 w-65" size="lg" onClick={() => setReadyToTransfer(true)}>
+                        <Button variant="default" className="bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl mb-10 w-45 sm:w-65" size="lg" onClick={() => setReadyToTransfer(true)}>
                                 Continue<ArrowRight className="w-4 h-4" />
                         </Button>
                         </div>

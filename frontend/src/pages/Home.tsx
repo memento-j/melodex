@@ -12,7 +12,7 @@ export default function Home() {
                     <h1 className="text-7xl font-extrabold text-center bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent p-5">
                     Melodex
                     </h1>
-                    <p className="mt-4 text-2xl text-white text-center max-w-2xl">
+                    <p className="mt-4 text-2xl text-white text-center w-100 sm:w-150 md:w-170">
                     Move your playlists between YouTube and Spotify in seconds — no more manual searching or recreating.
                     </p>
 

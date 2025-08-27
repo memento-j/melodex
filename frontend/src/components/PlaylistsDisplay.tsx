@@ -25,7 +25,7 @@ export default function PlaylistsDisplay({playlists}: PlaylistsDisplayProps) {
     return(
         <div className="flex justify-center">
             {/* Lists playlists and their songs in an accordian */}
-            <Accordion type="multiple" className="w-[40%]">
+            <Accordion type="multiple" className="w-100 sm:w-120 md:w-150 lg:w-200">
             {playlists.map((playlist: any, index: number) => (
                     <AccordionItem value={index.toString()} key={index} className="m-5">
                         <AccordionTrigger>
