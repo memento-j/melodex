@@ -18,7 +18,7 @@ export default function Hero() {
                     </p>
                     <div className="mt-6 flex flex-wrap justify-center gap-4">
                         <Link to="/select-playlists">
-                            <Button  variant="default" className="px-8 py-4 bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-200 w-50 h-15 text-xl" size="lg"
+                            <Button  variant="default" className="px-8 py-4 bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold rounded-full hover:scale-105 hover:cursor-pointer transition-transform duration-200 w-50 h-15 text-xl" size="lg"
                             >
                                 Get Started<ArrowRight className="w-4 h-4" />
                             </Button>

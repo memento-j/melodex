@@ -9,19 +9,34 @@ import ServiceSignin from '@/components/ServiceSignin';
 import AllPlaylistsSkeleton from '@/components/AllPlaylistsSkeleton';
 //shadcn components
 import { Button } from '@/components/ui/button';
+import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card";
-import { Alert, AlertTitle } from "@/components/ui/alert";
-import AnimatedContent from '@/components/AnimatedContent';
 //icons
 import { AlertCircleIcon } from "lucide-react"
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
+interface Playlist {
+  title: string
+  image: string
+  id: string
+}
+interface Song {
+  image: string;
+  artist: string;
+  title: string;
+}
+interface PlaylistToAdd {
+  image: string;
+  name: string;
+  songs: Song[];
+}
+
 export default function PickPlaylists() {
-  const [allPlaylists, setAllPlaylists] = useState<object[]>([]);
+  const [allPlaylists, setAllPlaylists] = useState<Playlist[]>([]);
   const [playlistsToAddIds, setPlaylistsToAddIds] = useState<string[]>([]);
-  const [playlistsToAdd, setPlaylistsToAdd] = useState<object[]>([]);
+  const [playlistsToAdd, setPlaylistsToAdd] = useState<PlaylistToAdd[]>([]);
   const [currentService, setCurrentService] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [displayNoPlaylists, setDisplayNoPlaylists] = useState<boolean>(false);
@@ -94,8 +109,7 @@ export default function PickPlaylists() {
           "id": playlist.id
         })
       });
-      //set to stateful var to be displayed
-      //along with the name of the service this was retrieved from
+      //set to stateful var to be displayed along with the name of the service this was retrieved from
       setAllPlaylists(formatedPlaylist);
       setCurrentService("youtube");
     } catch (err) {
@@ -156,7 +170,6 @@ export default function PickPlaylists() {
         //used to store information about every song in the current playlist
         let songInfo: any[] = [];
         //based on the service being used, the api data is parsed differently
-        //differenciate this using a switch statement
         switch (currentService) {
           case "spotify":
             fetchedSongs.forEach((song: any) => {
@@ -230,22 +243,14 @@ export default function PickPlaylists() {
       <section className="min-h-screen bg-slate-950 dark">
         <Navbar/>
         {currentService == "none" && 
-              <AnimatedContent
-                distance={100}
-                direction="vertical"
-                duration={0.7}
-                scale={1.0}
-                threshold={0.1}
-              >
                 <div className='flex flex-col items-center'>
                   <ServiceSignin message={"Sign in to the music service you would like to get your playlists from"} purpose={"get"}/>
                   <Link to="/">
-                    <Button variant="default" className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-200 text-xl mt-40 w-40 " size="lg">
+                    <Button variant="default" className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full hover:cursor-pointer hover:scale-105 transition-transform duration-200 text-xl w-40 " size="lg">
                         <ArrowLeft className="w-4 h-4" />Go Home
                     </Button>
                   </Link>
                 </div>
-              </AnimatedContent>
         }
         {/* Show the playlists retrieved from the current service (move to own component)*/}
         {currentService != "none" && currentService != null &&
@@ -258,23 +263,22 @@ export default function PickPlaylists() {
           {/* Display all playlists */}
           {allPlaylists.map((playlist: any) => {
             return (
-                <Card key={playlist.id} className='w-100 sm:w-130 md:w-160 m-2 bg-slate-900 hover:bg-indigo-500/50 hover:scale-105 transition-transform duration-125 has-[[aria-checked=true]]:bg-indigo-500/70'>
+              <Label htmlFor={playlist.title} className='block'>
+                <Card key={playlist.id} className='w-100 sm:w-130 md:w-160 m-2 bg-slate-900 hover:bg-indigo-500/50 hover:scale-105 hover:cursor-pointer transition-transform duration-125 has-[[aria-checked=true]]:bg-indigo-500/70'>
                   <CardContent className='flex items-center gap-4'>
                   <img className="size-30 object-cover rounded" src={playlist.image} />
                   {/* passing checked==true because of how shadcn works. 3 states true, false, or interminate. passing true treats the other two states as false so theere can be two outcomes (since the function wants a boolean*/}
                   <div className="flex flex-col flex-grow">
-                    <Label
-                      className="text-white text-2xl"
-                      htmlFor={playlist.title}
-                    >
+                    <span className="text-white text-2xl">
                       {playlist.title}
-                    </Label>
+                    </span>
                   </div>
-                  <Checkbox id={playlist.title} name={playlist.title} className='mt-2 ml-5 size-5 data-[state=checked]:text-white data-[state=checked]:border-indigo-500 dark:data-[state=checked]:bg-purple-500'
+                  <Checkbox id={playlist.title} name={playlist.title} className='mt-2 ml-5 size-5 data-[state=checked]:text-white data-[state=checked]:border-indigo-500 dark:data-[state=checked]:bg-slate-800'
                     onCheckedChange={(checked) => handlePlaylistCheck(playlist.id, checked == true)} 
                   />
                   </CardContent>
                 </Card>
+              </Label>
             );
           })}
           {/* If no playlists are selected, display an alert*/}
@@ -284,14 +288,14 @@ export default function PickPlaylists() {
               <AlertTitle>Must Select At Least 1 Playlist Before Continuing</AlertTitle>
             </Alert>
           }
-          {/* set playlists to add to localstorage so the data needed persists to the next page*/}
+          {/* When user selects to continue, set playlists to add to localstorage so the data needed persists to the next page*/}
           <div className='flex gap-5 mt-25 mb-20'>
-            <Button variant="default" className='bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-200 text-xl w-48 sm:w-60' size="lg"
+            <Button variant="default" className='bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full hover:scale-105 hover:cursor-pointer transition-transform duration-200 text-xl w-48 sm:w-60' size="lg"
               onClick={() => setCurrentService("none")}
             >
               <ArrowLeft className="w-4 h-4"/>Service Sign-in
             </Button>
-            <Button variant="default" className='bg-gradient-to-r from-purple-500 to-indigo-500 font-semibold rounded-full hover:scale-105 transition-transform duration-200 text-white text-xl w-48 sm:w-60' size="lg" 
+            <Button variant="default" className='bg-gradient-to-r from-purple-500 to-indigo-500 font-semibold rounded-full hover:scale-105 hover:cursor-pointer transition-transform duration-200 text-white text-xl w-48 sm:w-60' size="lg" 
               onClick={() => handleToTransferPage()}
               >
                 Continue<ArrowRight className="w-4 h-4" />
