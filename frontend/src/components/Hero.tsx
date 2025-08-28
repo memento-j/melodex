@@ -9,7 +9,7 @@ export default function Hero() {
             <Navbar />     
             {/* Page name, with small description, along with CTA */}
             <div className="relative z-10 flex flex-col items-center">
-                <div className="mt-30">
+                <div className="mt-35">
                     <h1 className="text-8xl font-extrabold text-center bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent p-5">
                         Melodex
                     </h1>
@@ -18,7 +18,7 @@ export default function Hero() {
                     </p>
                     <div className="mt-6 flex flex-wrap justify-center gap-4">
                         <Link to="/select-playlists">
-                            <Button  variant="default" className="px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-200 w-50 h-15 text-xl" size="lg"
+                            <Button  variant="default" className="px-8 py-4 bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-200 w-50 h-15 text-xl" size="lg"
                             >
                                 Get Started<ArrowRight className="w-4 h-4" />
                             </Button>
@@ -27,11 +27,11 @@ export default function Hero() {
                 </div>
             </div>
             {/* Step-by-Step Explanation Section */}
-            <div className="mt-35 mb-20">
-                <h2 className="text-[#F0EDEB] text-[42px] font-bold text-center mb-16">How It Works</h2>
+            <div className="mt-35 pb-20 px-3">
+                <h2 className="text-[#F0EDEB] text-[42px] font-bold text-center mb-20">How It Works</h2>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-7xl mx-auto">
                     {/* Step 1 */}
-                    <div className="flex flex-col items-center text-center">
+                    <div className="flex flex-col items-center text-center hover:scale-105 transition-transform duration-150">
                         <div className="text-[#F0EDEB] w-20 h-20 rounded-full bg-indigo-500 flex items-center justify-center text-3xl mb-6">
                             1
                         </div>
@@ -41,7 +41,7 @@ export default function Hero() {
                         </p>
                     </div>
                     {/* Step 2 */}
-                    <div className="flex flex-col items-center text-center">
+                    <div className="flex flex-col items-center text-center hover:scale-105 transition-transform duration-150">
                         <div className="text-[#F0EDEB] w-20 h-20 rounded-full bg-[#796FF0] flex items-center justify-center text-3xl mb-6">
                             2
                         </div>
@@ -51,7 +51,7 @@ export default function Hero() {
                         </p>
                     </div>
                     {/* Step 3 */}
-                    <div className="text-[#F0EDEB] flex flex-col items-center text-center">
+                    <div className="text-[#F0EDEB] flex flex-col items-center text-center hover:scale-105 transition-transform duration-150">
                         <div className="w-20 h-20 rounded-full bg-[#9A55F9] flex items-center justify-center text-3xl mb-6">
                             3
                         </div>
@@ -61,7 +61,7 @@ export default function Hero() {
                         </p>
                     </div>
                     {/* Step 4 */}
-                    <div className="text-[#F0EDEB] flex flex-col items-center text-center">
+                    <div className="text-[#F0EDEB] flex flex-col items-center text-center hover:scale-105 transition-transform duration-150">
                         <div className="w-20 h-20 rounded-full bg-purple-500 flex items-center justify-center text-3xl mb-6">
                             4
                         </div>

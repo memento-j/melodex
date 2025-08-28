@@ -22,7 +22,7 @@ export default function Navbar() {
                     {/* GitHub Link */}
                     <NavigationMenuItem>
                         <Link to="https://github.com/memento-j/melodex" target="_blank" rel="noreferrer">
-                            <img className="size-8" src="/github-mark-white.svg" alt="GitHub" />
+                            <img className=" p-2 size-14 rounded-lg bg bg-transparent hover:bg-slate-800 hover:scale-105 transition-transform duration-100" src="/github-mark-white.svg" alt="GitHub" />
                         </Link>
                     </NavigationMenuItem>
                 </NavigationMenuList>

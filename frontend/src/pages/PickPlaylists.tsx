@@ -240,7 +240,7 @@ export default function PickPlaylists() {
                 <div className='flex flex-col items-center'>
                   <ServiceSignin message={"Sign in to the music service you would like to get your playlists from"} purpose={"get"}/>
                   <Link to="/">
-                    <Button variant="default" className="bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl mt-40 w-40 " size="lg">
+                    <Button variant="default" className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-200 text-xl mt-40 w-40 " size="lg">
                         <ArrowLeft className="w-4 h-4" />Go Home
                     </Button>
                   </Link>
@@ -258,7 +258,7 @@ export default function PickPlaylists() {
           {/* Display all playlists */}
           {allPlaylists.map((playlist: any) => {
             return (
-                <Card key={playlist.id} className='w-100 sm:w-130 md:w-160 m-2 bg-[#172135] hover:bg-accent has-[[aria-checked=true]]:bg-slate-600'>
+                <Card key={playlist.id} className='w-100 sm:w-130 md:w-160 m-2 bg-slate-900 hover:bg-indigo-500/50 hover:scale-105 transition-transform duration-125 has-[[aria-checked=true]]:bg-indigo-500/70'>
                   <CardContent className='flex items-center gap-4'>
                   <img className="size-30 object-cover rounded" src={playlist.image} />
                   {/* passing checked==true because of how shadcn works. 3 states true, false, or interminate. passing true treats the other two states as false so theere can be two outcomes (since the function wants a boolean*/}
@@ -270,7 +270,7 @@ export default function PickPlaylists() {
                       {playlist.title}
                     </Label>
                   </div>
-                  <Checkbox id={playlist.title} name={playlist.title} className='mt-2 ml-5 size-5 data-[state=checked]:text-white data-[state=checked]:border-slate-900 dark:data-[state=checked]:bg-slate-900'
+                  <Checkbox id={playlist.title} name={playlist.title} className='mt-2 ml-5 size-5 data-[state=checked]:text-white data-[state=checked]:border-indigo-500 dark:data-[state=checked]:bg-purple-500'
                     onCheckedChange={(checked) => handlePlaylistCheck(playlist.id, checked == true)} 
                   />
                   </CardContent>
@@ -286,12 +286,12 @@ export default function PickPlaylists() {
           }
           {/* set playlists to add to localstorage so the data needed persists to the next page*/}
           <div className='flex gap-5 mt-25 mb-20'>
-            <Button variant="default" className='bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl w-48 sm:w-60' size="lg"
+            <Button variant="default" className='bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-200 text-xl w-48 sm:w-60' size="lg"
               onClick={() => setCurrentService("none")}
             >
               <ArrowLeft className="w-4 h-4"/>Service Sign-in
             </Button>
-            <Button variant="default" className='bg-slate-700 border border-slate-500 hover:bg-slate-600 text-white text-xl w-48 sm:w-60' size="lg" 
+            <Button variant="default" className='bg-gradient-to-r from-purple-500 to-indigo-500 font-semibold rounded-full hover:scale-105 transition-transform duration-200 text-white text-xl w-48 sm:w-60' size="lg" 
               onClick={() => handleToTransferPage()}
               >
                 Continue<ArrowRight className="w-4 h-4" />

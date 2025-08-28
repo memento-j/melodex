@@ -25,11 +25,11 @@ export default function PlaylistsDisplay({playlists}: PlaylistsDisplayProps) {
     return(
         <div className="flex justify-center">
             {/* Lists playlists and their songs in an accordian */}
-            <Accordion type="multiple" className="w-100 sm:w-120 md:w-150 lg:w-200">
+            <Accordion type="multiple" className="w-100 sm:w-120 md:w-150 lg:w-200 bg-slate-900 rounded-lg">
             {playlists.map((playlist: any, index: number) => (
                     <AccordionItem value={index.toString()} key={index} className="m-5">
                         <AccordionTrigger>
-                        <div className="flex items-center gap-5">
+                        <div className="flex items-center gap-5 hover:scale-103 transition-transform duration-175">
                             <img src={playlist.image} className="size-30 object-cover rounded" />
                             <p className="text-white text-3xl">{playlist.name}</p>
                         </div>
