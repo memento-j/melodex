@@ -246,7 +246,7 @@ export default function PickPlaylists() {
                 <div className='flex flex-col items-center'>
                   <ServiceSignin message={"Sign in to the music service you would like to get your playlists from"} purpose={"get"}/>
                   <Link to="/">
-                    <Button variant="default" className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full hover:cursor-pointer hover:scale-105 transition-transform duration-200 text-xl w-40 " size="lg">
+                    <Button variant="default" className="bg-indigo-500/70 hover:bg-indigo-500 text-white font-semibold rounded-full hover:cursor-pointer hover:scale-105 transition-transform duration-150 text-xl w-40" size="lg">
                         <ArrowLeft className="w-4 h-4" />Go Home
                     </Button>
                   </Link>
@@ -290,12 +290,12 @@ export default function PickPlaylists() {
           }
           {/* When user selects to continue, set playlists to add to localstorage so the data needed persists to the next page*/}
           <div className='flex gap-5 mt-25 mb-20'>
-            <Button variant="default" className='bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full hover:scale-105 hover:cursor-pointer transition-transform duration-200 text-xl w-48 sm:w-60' size="lg"
+            <Button variant="default" className='bg-indigo-500/70 hover:bg-indigo-500 text-white font-semibold rounded-full hover:scale-105 hover:cursor-pointer transition-transform duration-200 text-xl w-48 sm:w-60' size="lg"
               onClick={() => setCurrentService("none")}
             >
               <ArrowLeft className="w-4 h-4"/>Service Sign-in
             </Button>
-            <Button variant="default" className='bg-gradient-to-r from-purple-500 to-indigo-500 font-semibold rounded-full hover:scale-105 hover:cursor-pointer transition-transform duration-200 text-white text-xl w-48 sm:w-60' size="lg" 
+            <Button variant="default" className='bg-indigo-500/70 hover:bg-indigo-500 font-semibold rounded-full hover:scale-105 hover:cursor-pointer transition-transform duration-150 text-white text-xl w-48 sm:w-60' size="lg" 
               onClick={() => handleToTransferPage()}
               >
                 Continue<ArrowRight className="w-4 h-4" />

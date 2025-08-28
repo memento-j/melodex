@@ -78,11 +78,11 @@ export default function TransferPlaylists() {
                         {/* Allows user to go back if they want to add/remove playlists*/}
                         <div className="flex justify-center gap-5 mt-20">
                         <Link to="/select-playlists">
-                            <Button variant="default" className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-200 text-xl mb-10 w-45 sm:w-65" size="lg">
+                            <Button variant="default" className="bg-indigo-500/70 hover:bg-indigo-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-150 text-xl mb-10 w-45 sm:w-65" size="lg">
                                 <ArrowLeft className="w-4 h-4" />Select Playlists
                             </Button>
                         </Link>
-                        <Button variant="default" className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-200 text-xl mb-10 w-45 sm:w-65" size="lg" onClick={() => setReadyToTransfer(true)}>
+                        <Button variant="default" className="bg-indigo-500/70 hover:bg-indigo-500  text-white font-semibold rounded-full hover:scale-105 transition-transform duration-150 text-xl mb-10 w-45 sm:w-65" size="lg" onClick={() => setReadyToTransfer(true)}>
                                 Continue<ArrowRight className="w-4 h-4" />
                         </Button>
                         </div>
@@ -93,7 +93,7 @@ export default function TransferPlaylists() {
                 { readyToTransfer && currentService == "none" &&
                     <div className="flex flex-col justify-center items-center">
                         <ServiceSignin message={"Select which provider to transfer your playlists to"} purpose={"transfer"}/>
-                        <Button variant="default" className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-200 text-xl w-40 mt-60" size="lg"
+                        <Button variant="default" className="bg-indigo-500/70 hover:bg-indigo-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-150 text-xl w-40 mt-60" size="lg"
                             onClick={() => setReadyToTransfer(false)}
                         >
                             <ArrowLeft className="w-4 h-4" />Go back
@@ -108,7 +108,7 @@ export default function TransferPlaylists() {
                         {/* Display playlists to add. Title, and song info*/}
                         <PlaylistsDisplay playlists={playlists}/>
                         <div className="flex flex-col items-center">
-                            <Button variant="default" className="px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-200 w-60 h-15 text-2xl mt-30" size="lg"
+                            <Button variant="default" className="px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-150 w-60 h-15 text-2xl mt-30" size="lg"
                                 onClick={() => handleTransfer()} disabled={loading}
                             >
                                 {loading ? (
@@ -120,7 +120,7 @@ export default function TransferPlaylists() {
                                     "Transfer"
                                 )}
                             </Button>
-                            <Button variant="default" className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-200 text-xl w-40 mt-20" size="lg"
+                            <Button variant="default" className="bg-indigo-500/70 hover:bg-indigo-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-150 text-xl w-40 mt-20" size="lg"
                             onClick={() => setCurrentService("none")}
                             >
                                 <ArrowLeft className="w-4 h-4" />Go back
@@ -132,7 +132,7 @@ export default function TransferPlaylists() {
                     <div className="flex flex-col items-center mt-80">
                         <p className="text-white text-4xl p-1 mt-10 mb-30 text-center"> Successfully Transferred Playlists to {currentService.charAt(0).toUpperCase() + currentService.slice(1)}!</p>
                         <Link to="/select-playlists">
-                            <Button  variant="outline" className='bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-200 text-xl m-5 dark' size="lg">Start New Transfer<ArrowRight className="w-4 h-4" /></Button>
+                            <Button  variant="outline" className='bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-150 text-xl m-5 dark' size="lg">Start New Transfer<ArrowRight className="w-4 h-4" /></Button>
                         </Link>
                     </div>
                 }
