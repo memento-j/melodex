@@ -9,12 +9,12 @@ export default function Hero() {
             <Navbar />     
             {/* Page name, with small description, along with button to start */}
             <div className="relative z-10 flex flex-col items-center">
-                <div className=" mt-10 sm:mt-30 mb-5">
+                <div className=" mt-10 sm:mt-20 mb-5">
                     <h1 className="text-6xl sm:text-8xl font-extrabold text-center bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent p-5">
                         Melodex
                     </h1>
-                    <p className="mt-4 text-2xl text-[#F0EDEB] text-center w-70 sm:w-150 md:w-170 mb-10 mx-auto">
-                        Move your playlists between YouTube and Spotify in seconds — no more manual searching or recreating.
+                    <p className="mt-4 text-2xl sm:text-3xl text-[#F0EDEB] text-center w-70 sm:w-150 md:w-170 mb-10 mx-auto">
+                        Move your playlists between YouTube and Spotify in seconds! <br /> No more manual searching or recreating!
                     </p>
                     <div className="mt-6 flex flex-wrap justify-center gap-4">
                         <Link to="/select-playlists">
