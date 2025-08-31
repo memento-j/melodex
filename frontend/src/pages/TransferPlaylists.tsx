@@ -69,8 +69,8 @@ export default function TransferPlaylists() {
             <section className="min-h-screen bg-slate-950 dark">
                 <Navbar />   
                 {currentService == "none" &&  !readyToTransfer &&
-                    <div>
-                        <p className="text-white text-4xl p-1 mt-40 mb-20 text-center">Selected Playlists to Transfer</p>
+                    <div className="py-10 px-3 sm:p-10 border rounded-3xl border-slate-800/50 shadow-2xl max-w-2xs sm:max-w-xl md:max-w-3xl lg:max-w-4xl mx-auto mt-20">
+                        <p className="text-white text-xl sm:text-4xl p-1 mb-10 sm:mt-10 sm:mb-20 text-center">Selected Playlists to Transfer</p>
 
                         {/* Display playlists to add. Title, and song info*/}
                         <PlaylistsDisplay playlists={playlists}/>
@@ -78,11 +78,11 @@ export default function TransferPlaylists() {
                         {/* Allows user to go back if they want to add/remove playlists*/}
                         <div className="flex justify-center gap-5 mt-20">
                         <Link to="/select-playlists">
-                            <Button variant="default" className="bg-indigo-500/70 hover:bg-indigo-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-150 text-xl mb-10 w-45 sm:w-65" size="lg">
+                            <Button variant="default" className="bg-indigo-500/70 hover:bg-indigo-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-150  mb-10 w-32 sm:w-65" size="lg">
                                 <ArrowLeft className="w-4 h-4" />Select Playlists
                             </Button>
                         </Link>
-                        <Button variant="default" className="bg-indigo-500/70 hover:bg-indigo-500  text-white font-semibold rounded-full hover:scale-105 transition-transform duration-150 text-xl mb-10 w-45 sm:w-65" size="lg" onClick={() => setReadyToTransfer(true)}>
+                        <Button variant="default" className="bg-indigo-500/70 hover:bg-indigo-500  text-white font-semibold rounded-full hover:scale-105 transition-transform duration-150 text-sm sm:text-xl mb-10 w-32 sm:w-65" size="lg" onClick={() => setReadyToTransfer(true)}>
                                 Continue<ArrowRight className="w-4 h-4" />
                         </Button>
                         </div>
@@ -91,9 +91,9 @@ export default function TransferPlaylists() {
 
                 {/* Asks user to sign into the service they would like to transfer their playlists to*/}
                 { readyToTransfer && currentService == "none" &&
-                    <div className="flex flex-col justify-center items-center">
+                    <div className="flex flex-col justify-center items-center p-10 border rounded-3xl border-slate-800/50 shadow-2xl max-w-2xs sm:max-w-xl md:max-w-3xl mx-auto mt-20">
                         <ServiceSignin message={"Select which provider to transfer your playlists to"} purpose={"transfer"}/>
-                        <Button variant="default" className="bg-indigo-500/70 hover:bg-indigo-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-150 text-xl w-40 mt-60" size="lg"
+                        <Button variant="default" className="bg-indigo-500/70 hover:bg-indigo-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-150 text-xl w-40 mt-20" size="lg"
                             onClick={() => setReadyToTransfer(false)}
                         >
                             <ArrowLeft className="w-4 h-4" />Go back
@@ -103,12 +103,12 @@ export default function TransferPlaylists() {
 
                 {/* Once signed into the service that the playlists will be transferred to, display button to trasnfer*/}
                 { currentService != "none" && currentService != null && !transferSuccess && 
-                    <div>
-                        <p className="text-white text-4xl p-1 mt-40 mb-15 text-center">Click "Transfer" to move your playlists to {currentService.charAt(0).toUpperCase() + currentService.slice(1)}!</p>
+                    <div className="py-10 px-3 sm:p-10 border rounded-3xl border-slate-800/50 shadow-2xl max-w-2xs sm:max-w-xl md:max-w-3xl lg:max-w-4xl mx-auto mt-20">
+                        <p className="text-white text-lg sm:text-4xl p-1 mt-10 mb-15 text-center">Click "Transfer" to move your playlists to {currentService.charAt(0).toUpperCase() + currentService.slice(1)}!</p>
                         {/* Display playlists to add. Title, and song info*/}
                         <PlaylistsDisplay playlists={playlists}/>
                         <div className="flex flex-col items-center">
-                            <Button variant="default" className="px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-150 w-60 h-15 text-2xl mt-30" size="lg"
+                            <Button variant="default" className="px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-150 w-60 h-15 text-2xl mt-20" size="lg"
                                 onClick={() => handleTransfer()} disabled={loading}
                             >
                                 {loading ? (
@@ -129,8 +129,8 @@ export default function TransferPlaylists() {
                     </div>
                 }
                 { transferSuccess && currentService != null &&
-                    <div className="flex flex-col items-center mt-80">
-                        <p className="text-white text-4xl p-1 mt-10 mb-30 text-center"> Successfully Transferred Playlists to {currentService.charAt(0).toUpperCase() + currentService.slice(1)}!</p>
+                    <div className="flex flex-col items-center p-10 border rounded-3xl border-slate-800/50 shadow-2xl max-w-2xs sm:max-w-xl md:max-w-3xl mx-auto mt-30">
+                        <p className="text-white text-lg sm:text-4xl p-1 mt-10 mb-30 text-center"> Successfully Transferred Playlists to {currentService.charAt(0).toUpperCase() + currentService.slice(1)}!</p>
                         <Link to="/select-playlists">
                             <Button  variant="outline" className='bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold rounded-full hover:scale-105 transition-transform duration-150 text-xl m-5 dark' size="lg">Start New Transfer<ArrowRight className="w-4 h-4" /></Button>
                         </Link>

@@ -1,5 +1,5 @@
 # Melodex - Playlist Transferrer (Youtube/Spotify for now)
-Seemlessly Transfer your playlists between different music services in seconds.
+Melodex is a web application that allows users to seemlessly transfer their playlists between different music services in seconds.
 
 ## Live Demo
 ❗ Due to Youtuba Data API's quota limit, a little less than 200 songs can be added to Youtube playlists per day. Because of this, transferring to Youtube is not available the live version to avoid potential rate limits.
@@ -17,7 +17,20 @@ Seemlessly Transfer your playlists between different music services in seconds.
 - Youtube Search API (https://www.npmjs.com/package/youtube-search-api)
 - Spotify Web API (https://developer.spotify.com/documentation/web-api) 
 
-## Getting Started
+## Running Locally
+
+This project utilizes enviornment variables for sensitive data.
+
+- SESSION_SECRET=YOUR_SESSION_SECRET
+### Retrieved from Google Developer Cloud
+- YOUTUBE_CLIENT_ID=YOUR_YOUTUBE_CLIENT_ID
+- YOUTUBE_CLIENT_SECRET=YOUR_YOUTUBE_CLIENT_SECRET
+- YOUTUBE_REDIRECT_URI=YOUR_YOUTUBE_REDIRECT_URI
+- SPOTIFY_CLIENT_ID=YOUR_SPOTIFY_CLIENT_ID
+- SPOTIFY_CLIENT_SECRET=YOUR_SPOTIFY_CLIENTSECRET
+- SPOTIFY_REDIRECT_URI=YOUR_SPOTIFY_REDIRECT_URI
+
+
 
 ## Future Improvements
 - Implement functionality for Apple Music and SoundCloud

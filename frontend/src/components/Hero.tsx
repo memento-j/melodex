@@ -5,15 +5,15 @@ import { ArrowRight } from "lucide-react";
 
 export default function Hero() {
     return(
-        <section className="min-h-screen bg-slate-950">
+        <section className="relative min-h-screen bg-[url('/WaveLine.svg')] bg-position-[center_top_-150px]">
             <Navbar />     
-            {/* Page name, with small description, along with CTA */}
+            {/* Page name, with small description, along with button to start */}
             <div className="relative z-10 flex flex-col items-center">
-                <div className="mt-35">
-                    <h1 className="text-8xl font-extrabold text-center bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent p-5">
+                <div className=" mt-10 sm:mt-30 mb-5">
+                    <h1 className="text-6xl sm:text-8xl font-extrabold text-center bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent p-5">
                         Melodex
                     </h1>
-                    <p className="mt-4 text-2xl text-[#F0EDEB] text-center w-100 sm:w-150 md:w-170 mb-10">
+                    <p className="mt-4 text-2xl text-[#F0EDEB] text-center w-70 sm:w-150 md:w-170 mb-10 mx-auto">
                         Move your playlists between YouTube and Spotify in seconds — no more manual searching or recreating.
                     </p>
                     <div className="mt-6 flex flex-wrap justify-center gap-4">
@@ -27,9 +27,11 @@ export default function Hero() {
                 </div>
             </div>
             {/* Step-by-Step Explanation Section */}
-            <div className="mt-35 pb-20 px-3">
-                <h2 className="text-[#F0EDEB] text-[42px] font-bold text-center mb-20">How It Works</h2>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-7xl mx-auto">
+            <div className="relative mt-20 pb-20 pt-10 px-10 z-10 border rounded-xl border-slate-800/50 shadow-2xl max-w-2xs sm:max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-7xl mx-auto">
+                <h2 className="text-[#F0EDEB] text-[36px] sm:text-[42px] font-bold text-center mb-20">
+                    How It Works
+                </h2>
+                <div className="grid align-content grid-cols-1 md:grid-cols-4 gap-12">
                     {/* Step 1 */}
                     <div className="flex flex-col items-center text-center hover:scale-105 transition-transform duration-150">
                         <div className="text-[#F0EDEB] w-20 h-20 rounded-full bg-indigo-500 flex items-center justify-center text-3xl mb-6">
