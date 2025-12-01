@@ -2,7 +2,7 @@
 Melodex is a web application that allows users to seemlessly transfer their playlists between different music services in seconds.
 
 ## Live Demo
-❗ Due to Youtuba Data API's quota limit, a little less than 200 songs can be added to Youtube playlists per day. Because of this, transferring to Youtube is not available the live version to avoid potential rate limits.
+❗ Due to Youtuba Data API's quota limit, a little less than 200 songs can be added to Youtube playlists per day. Because of this, I am unable to deploy this project.
 
 ## Tech Stack
 
