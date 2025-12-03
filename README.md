@@ -19,18 +19,57 @@ Melodex is a web application that allows users to seemlessly transfer their play
 
 ## Running Locally
 
-This project utilizes enviornment variables for sensitive data.
+### 1. Clone the Repository
+```bash
+git clone https://github.com/memento-j/melodex
+cd melodex
+```
+### 2. Install Dependencies
 
-- SESSION_SECRET=YOUR_SESSION_SECRET
-### Retrieved from Google Developer Cloud
-- YOUTUBE_CLIENT_ID=YOUR_YOUTUBE_CLIENT_ID
-- YOUTUBE_CLIENT_SECRET=YOUR_YOUTUBE_CLIENT_SECRET
-- YOUTUBE_REDIRECT_URI=YOUR_YOUTUBE_REDIRECT_URI
-- SPOTIFY_CLIENT_ID=YOUR_SPOTIFY_CLIENT_ID
-- SPOTIFY_CLIENT_SECRET=YOUR_SPOTIFY_CLIENTSECRET
-- SPOTIFY_REDIRECT_URI=YOUR_SPOTIFY_REDIRECT_URI
+Frontend
+```bash
+cd frontend
+npm install
+```
+Backend
+```bash
+cd backend
+npm install
+```
 
+### 3. Environment Variables
 
+You will need a .env in the main directory ( melodex/.env ). After 
+
+```bash
+cd ..
+touch .env
+```
+In the .env file
+
+```bash
+SESSION_SECRET=YOUR_SESSION_SECRET
+YOUTUBE_CLIENT_ID=YOUR_YOUTUBE_CLIENT_ID
+YOUTUBE_CLIENT_SECRET=YOUR_YOUTUBE_CLIENT_SECRET
+YOUTUBE_REDIRECT_URI=YOUR_YOUTUBE_REDIRECT_URI
+SPOTIFY_CLIENT_ID=YOUR_SPOTIFY_CLIENT_ID
+SPOTIFY_CLIENT_SECRET=YOUR_SPOTIFY_CLIENTSECRET
+SPOTIFY_REDIRECT_URI=YOUR_SPOTIFY_REDIRECT_URI
+```
+
+### 4. Run the App
+
+**Frontend**
+```bash
+cd frontend
+npm run dev
+```
+
+**Backend**
+```bash
+cd backend
+npm run dev
+```
 
 ## Future Improvements
 - Implement functionality for Apple Music and SoundCloud

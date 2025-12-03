@@ -1,11 +1,10 @@
-require("dotenv").config({path: "../../priv/.env"});
+require("dotenv").config({path: "../.env"});
 const express = require('express');
 const router = express.Router();
 const {google} = require('googleapis');
 const crypto = require('crypto');
 const url = require('url');
 const youtubesearchapi = require("youtube-search-api");
-const { log } = require("console");
 
 /**
  * To use OAuth2 authentication, we need access to a CLIENT_ID, CLIENT_SECRET, AND REDIRECT_URI
