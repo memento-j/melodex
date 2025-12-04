@@ -39,21 +39,25 @@ npm install
 
 ### 3. Environment Variables
 
-You will need a .env in the main directory ( melodex/.env ). After 
+You will need a .env in the main directory ( melodex/.env )
 
 ```bash
 cd ..
 touch .env
 ```
-In the .env file
+**Must setup projects on:**
+- Google Cloud (https://cloud.google.com) and setup access to the Youtube Data API (https://developers.google.com/youtube/v3/docs)
+- Spotify (https://developer.spotify.com/documentation/web-api)
 
+
+Now in the .env file. 
 ```bash
 SESSION_SECRET=YOUR_SESSION_SECRET
 YOUTUBE_CLIENT_ID=YOUR_YOUTUBE_CLIENT_ID
 YOUTUBE_CLIENT_SECRET=YOUR_YOUTUBE_CLIENT_SECRET
 YOUTUBE_REDIRECT_URI=YOUR_YOUTUBE_REDIRECT_URI
 SPOTIFY_CLIENT_ID=YOUR_SPOTIFY_CLIENT_ID
-SPOTIFY_CLIENT_SECRET=YOUR_SPOTIFY_CLIENTSECRET
+SPOTIFY_CLIENT_SECRET=YOUR_SPOTIFY_CLIENT_SECRET
 SPOTIFY_REDIRECT_URI=YOUR_SPOTIFY_REDIRECT_URI
 ```
 
