@@ -16,22 +16,8 @@ import { Card, CardContent } from "@/components/ui/card";
 //icons
 import { AlertCircleIcon } from "lucide-react"
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-
-interface Playlist {
-  title: string
-  image: string
-  id: string
-}
-interface Song {
-  image: string;
-  artist: string;
-  title: string;
-}
-interface PlaylistToAdd {
-  image: string;
-  name: string;
-  songs: Song[];
-}
+import type Playlist from '@/types/Playlist';
+import type PlaylistToAdd from '@/types/PlaylistToAdd';
 
 export default function PickPlaylists() {
   const [allPlaylists, setAllPlaylists] = useState<Playlist[]>([]);
